@@ -15,7 +15,8 @@
   var MK = (window.MK = window.MK || {});
   var t = function (k, p) { return MK.i18n ? MK.i18n.t(k, p) : k; };
 
-  var EXT = (typeof browser !== 'undefined' && browser && browser.bookmarks) ? browser : null;
+  var EXT = (typeof browser !== 'undefined' && browser && browser.bookmarks) ? browser :
+    (typeof chrome !== 'undefined' && chrome && chrome.bookmarks) ? chrome : null;
   var isDemo = !EXT;
 
   /* In a static preview the very same document is served over http(s) or

@@ -2840,9 +2840,9 @@
     var about = el('div', 'set-about');
     var version = '2.1.0';
     try {
-      if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getManifest) {
-        version = browser.runtime.getManifest().version;
-      }
+      var _rt = (typeof browser !== 'undefined' && browser.runtime) ? browser.runtime :
+        (typeof chrome !== 'undefined' && chrome.runtime) ? chrome.runtime : null;
+      if (_rt && _rt.getManifest) version = _rt.getManifest().version;
     } catch (e) { /* demo */ }
     var p1 = el('p');
     p1.appendChild(el('strong', null, 'Tabmark '));

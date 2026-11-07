@@ -1,5 +1,5 @@
-# Android 读取器（独立于桌面版扩展）
-tools/
+# Android 读取器（独立项目，不进桌面扩展仓库）
+tools/android-bookmark-reader.py
 # 调试产物
 .tmp/
 *.zip

@@ -18,8 +18,13 @@
   var FAVICON_MAX_LEN = 32000;
   var USAGE_TTL = 180 * 24 * 60 * 60 * 1000;
 
-  /* single source of truth: shared/defaults.js is loaded right before this
-     file in manifest.background.scripts (see manifest.json). */
+  /* single source of truth: shared/defaults.js
+     - Firefox: loaded before this file via manifest.background.scripts
+     - Chrome MV3: service_worker runs this file alone, so importScripts here */
+  if (typeof importScripts === 'function' &&
+      !(typeof self !== 'undefined' && self.MK_DEFAULTS)) {
+    try { importScripts('shared/defaults.js'); } catch (e) { /* ignore */ }
+  }
   var DEFAULTS = (typeof self !== 'undefined' && self.MK_DEFAULTS) || {};
 
   /* ── settings ─────────────────────────────────────────────────────────── */
