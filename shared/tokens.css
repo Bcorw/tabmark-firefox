@@ -14,8 +14,8 @@
 
   /* ── type ─────────────────────────────────────────────────────────────── */
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-          "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
+          "HarmonyOS Sans SC", "Hiragino Sans GB", "Microsoft YaHei",
+          "Noto Sans SC", "Source Han Sans SC", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   --fs-11: 11px;
@@ -163,6 +163,8 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* 禁用伪粗体/伪斜体合成 —— 中文界面糊字的头号元凶 */
+  font-synthesis: none;
 }
 
 h1, h2, h3, p { margin: 0; }
