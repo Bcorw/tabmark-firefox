@@ -102,8 +102,8 @@ Tabmark 把新标签页变成一张书签台：左边文件夹树，右边一屏
 
 ## 6. 用户支持
 
-- **用户支持邮箱**：`<你的支持邮箱>`（必填，公开显示，审核员也用它联系你）
-- **用户支持网站**：可选，填 GitHub 仓库 Issues 地址即可
+- **用户支持邮箱**：`wrehldd@gmail.com`（必填，公开显示，审核员也用它联系你；如需更换请一并修改 `docs/privacy-policy.html` 里的联系邮箱）
+- **用户支持网站**：`https://github.com/Bcorw/tabmark-firefox/issues`（填仓库 Issues 地址即可）
 
 ---
 
@@ -117,7 +117,13 @@ Tabmark 把新标签页变成一张书签台：左边文件夹树，右边一屏
 
 manifest 已声明 `data_collection_permissions.required = ["none"]`，AMO 产品页会显示「不收集数据」。
 
-**「这个附加组件有自己的隐私策略」可不勾**——不收集数据时非必需。如果想更稳妥，把 `docs/privacy-policy.md` 托管到 GitHub Pages / Gist 后勾选并填 URL。
+**勾选「这个附加组件有自己的隐私策略」并填入：**
+
+```
+https://bcorw.github.io/tabmark-firefox/privacy-policy.html
+```
+
+该页面已由 `docs/privacy-policy.html` 托管到 GitHub Pages（main 分支 `/docs` 目录），公开可访问、双语（中/英）。勾选后可进一步减少审核追问。
 
 ---
 
