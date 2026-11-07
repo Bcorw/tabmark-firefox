@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markoob for Firefox · 视觉样式板</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  /* ─── Document shell ─────────────────────────────────────────────── */
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet {
+    width: calc(100% - 64px);
+    max-width: 1280px;
+    margin: 32px auto 64px;
+    padding: 52px 48px 64px;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .doc-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 8px; }
+  .brand svg { width: 18px; height: 18px; color: var(--text); }
+  .wordmark {
+    font-size: 15px; font-weight: 600; letter-spacing: var(--ls-brand);
+  }
+  .brand-tag {
+    font-size: 12px; font-weight: 500; letter-spacing: var(--ls-label);
+    color: var(--text-tertiary); padding-left: 8px; margin-left: 4px;
+    border-left: 1px solid var(--line-strong);
+  }
+  .doc-meta {
+    text-align: right; font-size: 12px; line-height: 18px;
+    color: var(--text-tertiary);
+  }
+  .doc-meta b { font-weight: 500; color: var(--text-secondary); }
+  .doc-title {
+    margin: 40px 0 0;
+    font-size: 30px; line-height: 38px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .doc-lede {
+    margin: 12px 0 0; max-width: 640px;
+    font-size: 14px; line-height: 22px; color: var(--text-secondary);
+  }
+  .kw {
+    display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .kw span {
+    font-size: 12px; font-weight: 500; letter-spacing: var(--ls-label);
+    color: var(--text-secondary);
+    padding: 4px 8px; border: 1px solid var(--line-strong);
+    border-radius: var(--r-xs); background: var(--surface);
+  }
+
+  /* ─── Sections ───────────────────────────────────────────────────── */
+  .sec { margin-top: 56px; padding-top: 36px; border-top: 1px solid var(--line); }
+  .sec:first-of-type { border-top: 0; margin-top: 40px; padding-top: 0; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; }
+  .kicker {
+    font-family: var(--font-mono); font-size: 11px; line-height: 16px;
+    color: var(--text-tertiary); letter-spacing: 0.04em;
+    white-space: nowrap; padding-top: 2px;
+  }
+  .sec-head h2 {
+    margin: 0; font-size: 16px; line-height: 22px; font-weight: 600;
+  }
+  .sec-note {
+    margin: 0 0 20px; max-width: 720px;
+    font-size: 13px; line-height: 20px; color: var(--text-secondary);
+  }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* ─── Swatches ───────────────────────────────────────────────────── */
+  .swatches {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 16px 12px;
+  }
+  .sw-chip {
+    height: 56px; border-radius: var(--r-sm); border: 1px solid var(--line);
+  }
+  .sw-name { font-family: var(--font-mono); font-size: 11px; line-height: 16px; margin-top: 8px; }
+  .sw-hex { font-family: var(--font-mono); font-size: 11px; line-height: 16px; color: var(--text-tertiary); }
+  .sw-use { font-size: 12px; line-height: 16px; color: var(--text-tertiary); margin-top: 2px; }
+
+  .spine-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px; margin-top: 20px;
+  }
+  .spine-legend {
+    display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap;
+    font-size: 12px; line-height: 16px; color: var(--text-tertiary);
+  }
+  .spine-legend b { font-weight: 500; color: var(--text-secondary); }
+
+  /* ─── Type specimen ──────────────────────────────────────────────── */
+  .type-row {
+    display: grid; grid-template-columns: 128px 1fr; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--line);
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-spec {
+    font-family: var(--font-mono); font-size: 11px; line-height: 16px;
+    color: var(--text-tertiary); padding-top: 3px;
+  }
+  .type-sample { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ─── Demo scaffolding ───────────────────────────────────────────── */
+  .demos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 40px; }
+  .demo { min-width: 0; }
+  .demo-label {
+    font-family: var(--font-mono); font-size: 11px; line-height: 16px;
+    letter-spacing: 0.04em; color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .demo-wide { grid-column: 1 / -1; }
+  .row-wrap { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  /* ─── Buttons ────────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 32px; padding: 0 12px; border-radius: var(--r-sm);
+    border: 1px solid var(--line-strong); background: var(--surface);
+    color: var(--text); font-family: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out);
+  }
+  .btn svg { width: 14px; height: 14px; }
+  .btn-primary {
+    background: var(--accent); border-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .btn-ghost { background: transparent; border-color: transparent; color: var(--text-secondary); }
+  .btn-danger { background: var(--danger); border-color: var(--danger); color: #FFFFFF; }
+  .btn-ghost-danger { background: transparent; border-color: transparent; color: var(--danger); }
+  .btn.is-hover { background: var(--surface-hover); border-color: var(--line-strong); }
+  .btn-primary.is-hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-ghost.is-hover { background: var(--surface-hover); color: var(--text); }
+  .btn.is-disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-lg { height: 40px; padding: 0 16px; }
+  .btn-sm { height: 28px; padding: 0 10px; font-size: 12px; }
+  .icon-btn {
+    width: 28px; height: 28px; display: inline-grid; place-items: center;
+    border-radius: var(--r-sm); border: 1px solid transparent;
+    background: transparent; color: var(--text-secondary); cursor: pointer;
+  }
+  .icon-btn svg { width: 16px; height: 16px; }
+  .icon-btn.is-hover { background: var(--surface-hover); color: var(--text); }
+
+  /* ─── Field ──────────────────────────────────────────────────────── */
+  .field {
+    display: flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 10px 0 12px;
+    background: var(--surface-inset);
+    border: 1px solid var(--line-input); border-radius: var(--r-sm);
+  }
+  .field > svg { width: 16px; height: 16px; color: var(--text-tertiary); flex: none; }
+  .field-text { font-size: 14px; line-height: 20px; color: var(--text); flex: 1; min-width: 0;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .field-text.ph { color: var(--text-tertiary); }
+  .keys { display: flex; gap: 3px; margin-left: auto; flex: none; }
+  kbd {
+    font-family: var(--font-mono); font-size: 11px; line-height: 14px;
+    min-width: 16px; text-align: center; padding: 0 4px;
+    background: var(--surface); color: var(--text-tertiary);
+    border: 1px solid var(--line); border-radius: var(--r-xs);
+  }
+  .field-hint { font-size: 12px; line-height: 16px; color: var(--text-tertiary); margin-left: auto; }
+  .field.is-hover { border-color: var(--line-strong); }
+  .field.is-focus {
+    background: var(--surface); border-color: var(--accent);
+    outline: 2px solid var(--focus); outline-offset: 2px;
+  }
+  .field-clear { width: 16px; height: 16px; color: var(--text-tertiary); flex: none; }
+  .field-clear svg { width: 16px; height: 16px; }
+
+  /* ─── Tree ───────────────────────────────────────────────────────── */
+  .tree { display: flex; flex-direction: column; gap: 1px; }
+  .tree-row {
+    display: flex; align-items: center; height: 30px;
+    padding-right: 8px; border-radius: var(--r-sm);
+    color: var(--text-secondary); cursor: default;
+  }
+  .tree-row .spine {
+    width: 2px; height: 16px; border-radius: 1px; flex: none;
+    background: var(--s); opacity: 0.55; margin-right: 8px;
+  }
+  .tree-row .chev { width: 14px; height: 14px; margin-right: 6px; color: var(--text-tertiary); flex: none; }
+  .tree-row .chev.hide { visibility: hidden; }
+  .tree-row .fi { width: 16px; height: 16px; margin-right: 8px; color: var(--text-tertiary); flex: none; }
+  .tree-row .label {
+    font-size: 13px; line-height: 18px; font-weight: 500;
+    flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .tree-row .count {
+    font-size: 12px; line-height: 16px; color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums; padding-left: 6px;
+  }
+  .lvl1 { padding-left: 14px; }
+  .lvl2 { padding-left: 28px; }
+  .tree-row.is-hover { background: var(--surface-hover); color: var(--text); }
+  .tree-row.is-hover .spine { opacity: 0.7; }
+  .tree-row.is-active { background: var(--surface-active); color: var(--text); }
+  .tree-row.is-active .spine { width: 3px; opacity: 1; }
+  .tree-row.is-drop {
+    background: var(--accent-soft); color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .tree-row.is-drop .spine { width: 3px; opacity: 1; }
+
+  /* ─── Menu ───────────────────────────────────────────────────────── */
+  .menu {
+    width: 216px; padding: 4px; background: var(--surface);
+    border: 1px solid var(--line-strong); border-radius: var(--r-md);
+    box-shadow: var(--shadow-2);
+  }
+  .mi {
+    display: flex; align-items: center; gap: 8px; height: 30px;
+    padding: 0 8px; border-radius: var(--r-sm);
+    font-size: 13px; font-weight: 500; color: var(--text);
+  }
+  .mi svg { width: 14px; height: 14px; color: var(--text-tertiary); flex: none; }
+  .mi.is-active {
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .mi.is-active svg { color: var(--accent); }
+  .mi.is-danger { color: var(--danger); }
+  .mi.is-danger svg { color: var(--danger); }
+  .mi.is-danger.is-active { background: var(--danger-soft); box-shadow: inset 0 0 0 1px var(--danger); }
+  .menu .sep { height: 1px; margin: 4px 0; background: var(--line); }
+  .mi .short { margin-left: auto; font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+
+  /* ─── Toast ──────────────────────────────────────────────────────── */
+  .toast {
+    display: inline-flex; align-items: center; gap: 12px;
+    min-width: 240px; height: 40px; padding: 0 12px;
+    background: var(--toast-bg); border-radius: var(--r-md);
+    box-shadow: var(--shadow-2);
+  }
+  .toast span { font-size: 13px; font-weight: 500; color: var(--toast-text); }
+  .toast-action {
+    margin-left: auto; font-family: inherit; font-size: 13px; font-weight: 500;
+    color: var(--toast-action); background: none; border: 0; cursor: pointer; padding: 0;
+  }
+
+  /* ─── Dialog ─────────────────────────────────────────────────────── */
+  .dialog {
+    width: 420px; max-width: 100%; background: var(--surface);
+    border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--shadow-2); overflow: hidden;
+  }
+  .dialog-head { padding: 20px 20px 0; }
+  .dialog-head h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; }
+  .dialog-body { padding: 12px 20px 20px; }
+  .dialog-desc { font-size: 14px; line-height: 20px; color: var(--text-secondary); margin: 0; }
+  .dialog-desc em { font-style: normal; color: var(--text); font-weight: 500; }
+  .dialog-foot {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 12px 20px; border-top: 1px solid var(--line);
+  }
+  .f-label { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--text-secondary); display: block; margin: 14px 0 6px; }
+  .f-input {
+    height: 36px; display: flex; align-items: center; padding: 0 10px;
+    background: var(--surface-inset); border: 1px solid var(--line-input);
+    border-radius: var(--r-sm); font-size: 14px; color: var(--text);
+  }
+  .f-input.err { border-color: var(--danger); }
+  .f-err { font-size: 12px; line-height: 16px; color: var(--danger); margin-top: 6px; }
+
+  /* ─── Cards ──────────────────────────────────────────────────────── */
+  .grid-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: var(--grid-gap);
+  }
+  .card {
+    position: relative; display: flex; align-items: center; gap: 10px;
+    min-height: 68px; padding: 12px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .card-icon {
+    width: 28px; height: 28px; flex: none; display: grid; place-items: center;
+    background: var(--surface-inset); border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  }
+  .card-icon svg { width: 16px; height: 16px; color: var(--text-secondary); }
+  .card-body { min-width: 0; flex: 1; }
+  .card-title {
+    font-size: var(--fs-bookmark-title); line-height: 1.35; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-domain {
+    font-size: 12px; line-height: 16px; color: var(--text-tertiary);
+    margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card.is-hover { background: var(--surface-hover); border-color: var(--line-strong); }
+  .card.is-focus { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .card.is-drag { opacity: 0.45; }
+  .card-folder { padding-left: 15px; }
+  .card-folder .cspine {
+    position: absolute; left: 1px; top: 1px; bottom: 1px; width: 3px;
+    background: var(--s); border-radius: 5px 0 0 5px;
+  }
+  .card-insert { position: relative; }
+  .card-insert::before {
+    content: ""; position: absolute; left: -6px; top: 0; bottom: 0; width: 2px;
+    background: var(--accent); border-radius: 1px;
+  }
+
+  /* ─── Compact rows ───────────────────────────────────────────────── */
+  .crow {
+    display: flex; align-items: center; gap: 8px; height: 36px;
+    padding: 0 10px; border-radius: var(--r-sm); color: var(--text);
+  }
+  .crow .ci {
+    width: 16px; height: 16px; flex: none; display: grid; place-items: center;
+    background: var(--surface-inset); border: 1px solid var(--line);
+    border-radius: 2px; font-size: 10px; font-weight: 600; color: var(--text-secondary);
+  }
+  .crow .t { font-size: 13px; font-weight: 500; flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .crow .d { font-size: 12px; color: var(--text-tertiary); max-width: 34%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .crow.is-hover { background: var(--surface-hover); }
+
+  /* ─── Section label ──────────────────────────────────────────────── */
+  .sec-label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .sec-label .t { font-size: 12px; font-weight: 600; letter-spacing: var(--ls-label); color: var(--text-tertiary); }
+  .sec-label .c { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+  .sec-label .rule { flex: 1; height: 1px; background: var(--line); margin-left: 4px; }
+
+  /* ─── Empty / skeleton ───────────────────────────────────────────── */
+  .empty { max-width: 320px; margin: 0 auto; text-align: center; padding: 8px 0; }
+  .empty svg { width: 40px; height: 40px; color: var(--text-tertiary); }
+  .empty h4 { margin: 12px 0 0; font-size: 14px; line-height: 20px; font-weight: 500; }
+  .empty p { margin: 6px 0 0; font-size: 13px; line-height: 20px; color: var(--text-secondary); }
+  .empty .btn { margin-top: 16px; }
+  .sk-card {
+    display: flex; align-items: center; gap: 10px; min-height: 68px; padding: 12px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+  }
+  .sk { background: var(--skeleton); border-radius: 2px; animation: pulse 1.4s var(--ease-in-out) infinite; }
+  .sk-ico { width: 28px; height: 28px; border-radius: var(--r-sm); flex: none; }
+  .sk-line { height: 8px; }
+  @keyframes pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.85; } }
+
+  /* ─── Product mock ───────────────────────────────────────────────── */
+  .mock {
+    display: flex; min-height: 560px; overflow: hidden;
+    background: var(--bg); border: 1px solid var(--line-strong);
+    border-radius: var(--r-lg);
+  }
+  .mock-side {
+    width: 232px; flex: none; display: flex; flex-direction: column;
+    background: var(--bg); border-right: 1px solid var(--line);
+  }
+  .mock-side-head {
+    display: flex; align-items: center; gap: 8px;
+    height: 56px; padding: 0 12px 0 16px;
+  }
+  .mock-side-head svg { width: 16px; height: 16px; color: var(--text); flex: none; }
+  .mock-side-head .wordmark { font-size: 15px; }
+  .mock-side-head .collapse { margin-left: auto; }
+  .mock-tree { padding: 4px 8px 8px; flex: 1; overflow: hidden; }
+  .mock-side-foot { padding: 8px; border-top: 1px solid var(--line); }
+
+  .mock-main { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--canvas); }
+  .mock-top {
+    display: flex; align-items: center; gap: 12px;
+    height: 56px; padding: 0 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .mock-top .field { width: clamp(280px, 34vw, 420px); }
+  .mock-top-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+  .mock-body { padding: 20px 32px 28px; overflow: hidden; }
+  .mock-sec + .mock-sec { margin-top: var(--section-gap); }
+  .mock-rec { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 12px; max-width: 900px; }
+
+  /* ─── Dark block ─────────────────────────────────────────────────── */
+  .dark-block {
+    margin: 72px -48px -64px;
+    padding: 52px 48px 0;
+    background: var(--bg);
+    color: var(--text); /* re-resolve inherited ink inside the nested dark theme */
+    border-top: 1px solid var(--line-strong);
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+  }
+  .dark-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .dark-head h2 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; color: var(--text); }
+  .dark-note { margin: 0 0 24px; max-width: 720px; font-size: 13px; line-height: 20px; color: var(--text-secondary); }
+  .pal-strip { display: flex; gap: 1px; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--line); }
+  .pal-strip i { display: block; height: 40px; flex: 1; }
+  .pal-legend {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px 16px; margin-top: 12px;
+  }
+  .pal-legend div { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
+  .pal-legend b { width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--line-strong); flex: none; }
+
+  .foot {
+    margin-top: 32px; padding: 16px 0 24px; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; gap: 16px;
+    font-size: 12px; line-height: 18px; color: var(--text-tertiary);
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <!-- ═══ Header ══════════════════════════════════════════════════ -->
+  <header class="doc-head">
+    <div class="brand">
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4.5 2.5h9v13l-4.5-3.2-4.5 3.2z"/>
+      </svg>
+      <span class="wordmark">Markoob</span>
+      <span class="brand-tag">for Firefox</span>
+    </div>
+    <div class="doc-meta">
+      <b>视觉样式板</b> v0.1<br>
+      tokens.css · light / dark · 无网络请求
+    </div>
+  </header>
+
+  <h1 class="doc-title">一张被长期使用的阅读桌</h1>
+  <p class="doc-lede">
+    纸是主区，桌沿是侧栏，字是墨，其余全部让路。用户打开新标签页只停 2–5 秒，
+    所以这套视觉不追求第一眼惊艳，而追求第二十次打开仍然不烦——层级只靠留白、1px 细线和字重建立。
+  </p>
+  <div class="kw"><span>纸</span><span>墨</span><span>秩序</span></div>
+
+  <!-- ═══ 01 色板 ═════════════════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head"><span class="kicker">01</span><h2>浅色色板</h2></div>
+    <p class="sec-note">
+      canvas 永远比 bg 亮一档，surface 永远比 canvas 亮一档——这是两套主题共用的明度契约。
+      强调色是"墨蓝"，饱和度被刻意压低，读起来像墨而不像 SaaS。
+    </p>
+
+    <div class="swatches">
+      <div class="sw"><div class="sw-chip" style="background:var(--bg)"></div><div class="sw-name">--bg</div><div class="sw-hex">#EDE9E0</div><div class="sw-use">桌沿 / 侧栏</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--canvas)"></div><div class="sw-name">--canvas</div><div class="sw-hex">#F8F6F1</div><div class="sw-use">主区的纸</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--surface)"></div><div class="sw-name">--surface</div><div class="sw-hex">#FDFCF8</div><div class="sw-use">卡片 / 浮层</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--surface-hover)"></div><div class="sw-name">--surface-hover</div><div class="sw-hex">#F1EEE6</div><div class="sw-use">悬停</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--surface-active)"></div><div class="sw-name">--surface-active</div><div class="sw-hex">#E8E4DA</div><div class="sw-use">选中 / 按下</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--surface-inset)"></div><div class="sw-name">--surface-inset</div><div class="sw-hex">#EFEBE2</div><div class="sw-use">输入框底</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--line)"></div><div class="sw-name">--line</div><div class="sw-hex">#DFDACD</div><div class="sw-use">1px 分隔</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--line-strong)"></div><div class="sw-name">--line-strong</div><div class="sw-hex">#C9C3B3</div><div class="sw-use">描边</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--line-input)"></div><div class="sw-name">--line-input</div><div class="sw-hex">#8C8470</div><div class="sw-use">表单边界</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--text)"></div><div class="sw-name">--text</div><div class="sw-hex">#211E19</div><div class="sw-use">15.38:1</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--text-secondary)"></div><div class="sw-name">--text-secondary</div><div class="sw-hex">#5A554B</div><div class="sw-use">6.86:1</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--text-tertiary)"></div><div class="sw-name">--text-tertiary</div><div class="sw-hex">#6C6656</div><div class="sw-use">5.29:1</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--accent)"></div><div class="sw-name">--accent</div><div class="sw-hex">#1E4A66</div><div class="sw-use">8.73:1</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--accent-soft)"></div><div class="sw-name">--accent-soft</div><div class="sw-hex">#E2E8EB</div><div class="sw-use">菜单高亮</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--focus)"></div><div class="sw-name">--focus</div><div class="sw-hex">#2E6F96</div><div class="sw-use">焦点环</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--success)"></div><div class="sw-name">--success</div><div class="sw-hex">#2A6046</div><div class="sw-use">6.80:1</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--danger)"></div><div class="sw-name">--danger</div><div class="sw-hex">#9C2E22</div><div class="sw-use">6.88:1</div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--toast-bg)"></div><div class="sw-name">--toast-bg</div><div class="sw-hex">#211E19</div><div class="sw-use">墨块</div></div>
+    </div>
+
+    <div class="sec-head" style="margin-top:40px"><span class="kicker">01b</span><h2>招牌细节 · 色脊</h2></div>
+    <p class="sec-note">
+      全产品只有一个装饰母题：文件夹左缘的 2px 彩色书脊，像档案夹上的彩色标签。
+      按文件夹名哈希分配 6 色之一，只在侧栏与文件夹卡片上出现，永不进入书签扫读路径。
+    </p>
+    <div class="spine-cards">
+      <div class="card card-folder">
+        <span class="cspine" style="--s:var(--spine-1)"></span>
+        <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+        <div class="card-body"><div class="card-title">工具栏</div><div class="card-domain">36 项</div></div>
+      </div>
+      <div class="card card-folder">
+        <span class="cspine" style="--s:var(--spine-2)"></span>
+        <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+        <div class="card-body"><div class="card-title">阅读</div><div class="card-domain">41 项</div></div>
+      </div>
+      <div class="card card-folder">
+        <span class="cspine" style="--s:var(--spine-3)"></span>
+        <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+        <div class="card-body"><div class="card-title">书签菜单</div><div class="card-domain">12 项</div></div>
+      </div>
+      <div class="card card-folder">
+        <span class="cspine" style="--s:var(--spine-4)"></span>
+        <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+        <div class="card-body"><div class="card-title">设计参考</div><div class="card-domain">18 项</div></div>
+      </div>
+      <div class="card card-folder">
+        <span class="cspine" style="--s:var(--spine-5)"></span>
+        <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+        <div class="card-body"><div class="card-title">开发文档</div><div class="card-domain">24 项</div></div>
+      </div>
+      <div class="card card-folder">
+        <span class="cspine" style="--s:var(--spine-6)"></span>
+        <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+        <div class="card-body"><div class="card-title">未分类</div><div class="card-domain">7 项</div></div>
+      </div>
+    </div>
+    <div class="spine-legend">
+      <span>空闲 <b>2px · 55%</b></span>
+      <span>悬停 <b>2px · 70%</b></span>
+      <span>选中 <b>3px · 100%</b></span>
+      <span>拖拽悬停 <b>3px · 100% + --accent-soft 底</b></span>
+    </div>
+    </div>
+  </section>
+
+  <!-- ═══ 02 字体 ═════════════════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head"><span class="kicker">02</span><h2>字体阶梯</h2></div>
+    <p class="sec-note">
+      Lexend 只承担拉丁与数字，中文回退到系统字体。7 级阶梯，最小 12px——中文不允许 11px。
+      书签字号是唯一可由用户调整的变量（13–17px）。
+    </p>
+
+    <div class="type-row">
+      <div class="type-spec">--fs-2xl · 24 / 30<br>w600</div>
+      <div class="type-sample" style="font-size:24px;line-height:30px;font-weight:600;letter-spacing:-0.005em">按你的方式陈列</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-xl · 20 / 26<br>w600</div>
+      <div class="type-sample" style="font-size:20px;line-height:26px;font-weight:600">管理书签，不用离开键盘</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-lg · 16 / 22<br>w600</div>
+      <div class="type-sample" style="font-size:16px;line-height:22px;font-weight:600">删除文件夹</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-bookmark-title<br>14 / 1.35 · w500</div>
+      <div class="type-sample" style="font-size:14px;line-height:19px;font-weight:500">MDN Web 文档 — Web 开发技术</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-md · 14 / 20<br>w400</div>
+      <div class="type-sample" style="font-size:14px;line-height:20px">在地址栏点星标，或从这里添加一个书签。</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-sm · 13 / 18<br>w500</div>
+      <div class="type-sample" style="font-size:13px;line-height:18px;font-weight:500">在新标签页打开 · 编辑 · 复制链接</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-xs · 12 / 16<br>w500 · +0.04em</div>
+      <div class="type-sample" style="font-size:12px;line-height:16px;font-weight:500;letter-spacing:0.04em;color:var(--text-tertiary)">置顶 · 为你推荐 · 来自历史记录</div>
+    </div>
+    <div class="type-row">
+      <div class="type-spec">--fs-2xs · 11 / 14<br>w500</div>
+      <div class="type-sample"><kbd>⌘</kbd> <kbd>K</kbd> &nbsp;<span style="font-size:12px;color:var(--text-tertiary)">仅用于快捷键胶囊</span></div>
+    </div>
+  </section>
+
+  <!-- ═══ 03 组件 ═════════════════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head"><span class="kicker">03</span><h2>组件语法</h2></div>
+    <p class="sec-note">
+      每个组件都只解决一件事。卡片没有阴影、悬停不上浮、没有常驻徽标；
+      所有"好看"来自比例与留白，不来自效果。下排第二个起为静态示意状态（hover / focus / drag）。
+    </p>
+
+    <div class="demos">
+
+      <div class="demo">
+        <div class="demo-label">按钮 · 默认 / 主 / 幽灵 / 危险 / 禁用</div>
+        <div class="row-wrap">
+          <button class="btn" type="button">取消</button>
+          <button class="btn btn-primary" type="button">添加书签</button>
+          <button class="btn btn-ghost" type="button">跳过</button>
+          <button class="btn btn-danger" type="button">删除</button>
+          <button class="btn is-disabled" type="button" disabled>保存</button>
+        </div>
+        <div class="row-wrap" style="margin-top:12px">
+          <button class="btn is-hover" type="button">悬停态</button>
+          <button class="btn btn-primary is-hover" type="button">悬停态</button>
+          <button class="btn btn-ghost is-hover" type="button">悬停态</button>
+          <button class="btn btn-ghost-danger" type="button">取消收藏</button>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">搜索框 · 空闲 / 悬停 / 聚焦（首屏默认） / 有结果</div>
+        <div class="field" style="margin-bottom:8px">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+          <span class="field-text ph">搜索书签、文件夹…</span>
+          <span class="keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="field is-hover" style="margin-bottom:8px">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+          <span class="field-text ph">搜索书签、文件夹…</span>
+          <span class="keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="field is-focus" style="margin-bottom:8px">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+          <span class="field-text">fig</span>
+          <span class="field-clear"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></span>
+        </div>
+        <div class="field">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+          <span class="field-text">设计</span>
+          <span class="field-hint">12 个结果</span>
+          <span class="field-clear"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">文件夹树 · 空闲 / 悬停 / 选中 / 拖拽悬停 / 键盘焦点</div>
+        <div class="tree">
+          <div class="tree-row lvl1">
+            <span class="spine" style="--s:var(--spine-1)"></span>
+            <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">工具栏</span><span class="count">36</span>
+          </div>
+          <div class="tree-row lvl2 is-hover">
+            <span class="spine" style="--s:var(--spine-4)"></span>
+            <span class="chev hide"></span>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">设计参考</span><span class="count">18</span>
+          </div>
+          <div class="tree-row lvl2 is-active">
+            <span class="spine" style="--s:var(--spine-5)"></span>
+            <span class="chev hide"></span>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">开发文档</span><span class="count">24</span>
+          </div>
+          <div class="tree-row lvl2 is-drop">
+            <span class="spine" style="--s:var(--spine-2)"></span>
+            <span class="chev hide"></span>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">阅读（拖入此处）</span><span class="count">41</span>
+          </div>
+          <div class="tree-row lvl1" style="outline:2px solid var(--focus);outline-offset:-2px">
+            <span class="spine" style="--s:var(--spine-3)"></span>
+            <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3.5 9 7l-3.5 3.5"/></svg>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">书签菜单（键盘焦点）</span><span class="count">12</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">右键菜单 · 高亮 = 底色 + 1px 内描边（明度差不足以单独指示）</div>
+        <div class="menu">
+          <div class="mi">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5"/></svg>
+            在新标签页打开<span class="short">↵</span>
+          </div>
+          <div class="mi is-active">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 2v7M4 6l3 3 3-3M2.5 11.5h9"/></svg>
+            置顶
+          </div>
+          <div class="mi">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2.5h10v7H8l-3 2.5v-2.5H2z"/></svg>
+            二维码
+          </div>
+          <div class="mi">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3.5 2h7v10H3.5zM5.5 5h3M5.5 7.5h3"/></svg>
+            编辑
+          </div>
+          <div class="sep"></div>
+          <div class="mi is-danger is-active">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 4h9M5 4V2.5h4V4M4 4l.5 7.5h5L10 4"/></svg>
+            删除
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">对话框 · 字段 / 错误 / 危险确认</div>
+        <div class="dialog">
+          <div class="dialog-head"><h3>添加书签</h3></div>
+          <div class="dialog-body">
+            <label class="f-label">标题</label>
+            <div class="f-input">Markoob 设计规范</div>
+            <label class="f-label">链接</label>
+            <div class="f-input err">markoob</div>
+            <div class="f-err">请输入以 http:// 或 https:// 开头的链接</div>
+          </div>
+          <div class="dialog-foot">
+            <button class="btn btn-ghost" type="button">取消</button>
+            <button class="btn btn-primary" type="button">保存</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">Toast · 墨块（浅色模式里唯一的深色面）</div>
+        <div class="toast" style="width:100%;max-width:420px">
+          <span>书签已删除</span>
+          <button class="toast-action" type="button">撤销</button>
+        </div>
+        <div class="toast" style="width:100%;max-width:420px;margin-top:12px">
+          <span>已复制</span>
+        </div>
+        <div class="demo-label" style="margin:20px 0 10px">空状态 · 无结果</div>
+        <div class="empty" style="margin:0">
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M10 7h12l8 8v18H10z"/><path d="M22 7v8h8M15 24h10M15 28h6"/></svg>
+          <h4>没有找到「figm」</h4>
+          <p>换个词，或直接在网页中搜索。</p>
+          <button class="btn btn-ghost" type="button">在网页中搜索</button>
+        </div>
+      </div>
+
+      <div class="demo demo-wide">
+        <div class="demo-label">书签卡片 · 默认 / 悬停 / 键盘焦点 / 拖拽中 · 文件夹卡片 · 插入位置</div>
+        <div class="grid-cards">
+          <div class="card">
+            <div class="card-icon">G</div>
+            <div class="card-body"><div class="card-title">GitHub</div><div class="card-domain">github.com</div></div>
+          </div>
+          <div class="card is-hover">
+            <div class="card-icon">M</div>
+            <div class="card-body"><div class="card-title">MDN Web 文档</div><div class="card-domain">developer.mozilla.org</div></div>
+          </div>
+          <div class="card is-focus">
+            <div class="card-icon">F</div>
+            <div class="card-body"><div class="card-title">Figma</div><div class="card-domain">figma.com</div></div>
+          </div>
+          <div class="card is-drag">
+            <div class="card-icon">豆</div>
+            <div class="card-body"><div class="card-title">豆瓣电影</div><div class="card-domain">movie.douban.com</div></div>
+          </div>
+          <div class="card card-folder">
+            <span class="cspine" style="--s:var(--spine-4)"></span>
+            <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+            <div class="card-body"><div class="card-title">设计参考</div><div class="card-domain">18 项</div></div>
+          </div>
+          <div class="card card-insert">
+            <div class="card-icon">A</div>
+            <div class="card-body"><div class="card-title">Are.na</div><div class="card-domain">are.na</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">紧凑行 · compact（36 高，无盒子）</div>
+        <div class="crow is-hover"><span class="ci">H</span><span class="t">Hacker News</span><span class="d">news.ycombinator.com</span></div>
+        <div class="crow"><span class="ci">少</span><span class="t">少数派</span><span class="d">sspai.com</span></div>
+        <div class="crow"><span class="ci">维</span><span class="t">维基百科</span><span class="d">zh.wikipedia.org</span></div>
+        <div class="crow"><span class="ci">M</span><span class="t">Mobbin — 移动端设计参考</span><span class="d">mobbin.com</span></div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">区块标题（结构线） · 加载骨架（脉冲，非扫光）</div>
+        <div class="sec-label" style="margin-bottom:14px">
+          <span class="t">置顶</span><span class="c">4</span><span class="rule"></span>
+        </div>
+        <div class="grid-cards" style="grid-template-columns:1fr 1fr">
+          <div class="sk-card">
+            <div class="sk sk-ico"></div>
+            <div style="flex:1">
+              <div class="sk sk-line" style="width:64%"></div>
+              <div class="sk sk-line" style="width:38%;margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="sk-card">
+            <div class="sk sk-ico"></div>
+            <div style="flex:1">
+              <div class="sk sk-line" style="width:52%"></div>
+              <div class="sk sk-line" style="width:30%;margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-label" style="margin:20px 0 10px">错误态 · 权限级失败</div>
+        <div class="empty" style="margin:0;text-align:left;max-width:none">
+          <svg style="color:var(--danger)" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M20 8 34 32H6z"/><path d="M20 17v7M20 27.5v.5"/></svg>
+          <h4>读不到书签</h4>
+          <p>Firefox 未授予书签权限，请在扩展管理中允许后重试。</p>
+          <button class="btn btn-primary" type="button">重试</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ 04 新标签页 ═════════════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head"><span class="kicker">04</span><h2>新标签页 · 浅色</h2></div>
+    <p class="sec-note">
+      首屏第一视觉重量是搜索框（打开即聚焦），第二是书签本身。侧栏 232，卡片网格 auto-fill / min 190，
+      区块之间 28，内容区左右 32。占位 favicon 用字母块——真实环境读 Firefox 本地 favicon，不发任何外部请求。
+    </p>
+
+    <div class="mock">
+      <aside class="mock-side">
+        <div class="mock-side-head">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5h9v13l-4.5-3.2-4.5 3.2z"/></svg>
+          <span class="wordmark">Markoob</span>
+          <span class="collapse icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9.5 4 5.5 8l4 4"/></svg></span>
+        </div>
+        <div class="mock-tree">
+          <div class="tree">
+            <div class="tree-row lvl1">
+              <span class="spine" style="background:transparent"></span>
+              <svg class="chev hide"></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 2.5h4.5v4.5H2.5zM9 2.5h4.5v4.5H9zM2.5 9h4.5v4.5H2.5zM9 9h4.5v4.5H9z"/></svg>
+              <span class="label">全部书签</span><span class="count">128</span>
+            </div>
+            <div class="tree-row lvl1" style="margin-top:6px">
+              <span class="spine" style="--s:var(--spine-1)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">工具栏</span><span class="count">36</span>
+            </div>
+            <div class="tree-row lvl2 is-active">
+              <span class="spine" style="--s:var(--spine-4)"></span>
+              <span class="chev hide"></span>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">设计参考</span><span class="count">18</span>
+            </div>
+            <div class="tree-row lvl2">
+              <span class="spine" style="--s:var(--spine-5)"></span>
+              <span class="chev hide"></span>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">开发文档</span><span class="count">24</span>
+            </div>
+            <div class="tree-row lvl2">
+              <span class="spine" style="--s:var(--spine-2)"></span>
+              <span class="chev hide"></span>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">阅读</span><span class="count">41</span>
+            </div>
+            <div class="tree-row lvl1">
+              <span class="spine" style="--s:var(--spine-3)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3.5 9 7l-3.5 3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">书签菜单</span><span class="count">12</span>
+            </div>
+            <div class="tree-row lvl1">
+              <span class="spine" style="--s:var(--spine-6)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3.5 9 7l-3.5 3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">未分类</span><span class="count">7</span>
+            </div>
+            <div class="tree-row lvl1">
+              <span class="spine" style="--s:var(--spine-2)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3.5 9 7l-3.5 3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">移动端</span>
+            </div>
+          </div>
+        </div>
+        <div class="mock-side-foot">
+          <div class="tree-row lvl1" style="padding-left:8px">
+            <span class="spine" style="background:transparent;margin-right:2px"></span>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1"/></svg>
+            <span class="label">设置</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="mock-main">
+        <div class="mock-top">
+          <div class="field is-focus">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+            <span class="field-text ph">搜索书签、文件夹…</span>
+            <span class="keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+          </div>
+          <div class="mock-top-actions">
+            <span class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 2.5h4.5v4.5H2.5zM9 2.5h4.5v4.5H9zM2.5 9h4.5v4.5H2.5zM9 9h4.5v4.5H9z"/></svg></span>
+            <span class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h7M2.5 11.5h9"/></svg></span>
+            <span class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3h10v10H3z"/><path d="M6 3v10"/></svg></span>
+          </div>
+        </div>
+
+        <div class="mock-body">
+          <div class="mock-sec">
+            <div class="sec-label"><span class="t">置顶</span><span class="c">4</span><span class="rule"></span></div>
+            <div class="grid-cards" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+              <div class="card">
+                <div class="card-icon">G</div>
+                <div class="card-body"><div class="card-title">GitHub</div><div class="card-domain">github.com</div></div>
+              </div>
+              <div class="card">
+                <div class="card-icon">F</div>
+                <div class="card-body"><div class="card-title">Figma</div><div class="card-domain">figma.com</div></div>
+              </div>
+              <div class="card">
+                <div class="card-icon">M</div>
+                <div class="card-body"><div class="card-title">MDN Web 文档</div><div class="card-domain">developer.mozilla.org</div></div>
+              </div>
+              <div class="card card-folder">
+                <span class="cspine" style="--s:var(--spine-4)"></span>
+                <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+                <div class="card-body"><div class="card-title">设计参考</div><div class="card-domain">18 项</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mock-sec">
+            <div class="sec-label"><span class="t">为你推荐</span><span class="c">6</span><span class="rule"></span></div>
+            <div class="mock-rec">
+              <div class="crow"><span class="ci">H</span><span class="t">Hacker News</span><span class="d">news.ycombinator.com</span></div>
+              <div class="crow"><span class="ci">少</span><span class="t">少数派</span><span class="d">sspai.com</span></div>
+              <div class="crow"><span class="ci">A</span><span class="t">Are.na</span><span class="d">are.na</span></div>
+              <div class="crow"><span class="ci">F</span><span class="t">Firefox 附加组件</span><span class="d">addons.mozilla.org</span></div>
+              <div class="crow"><span class="ci">维</span><span class="t">维基百科</span><span class="d">zh.wikipedia.org</span></div>
+              <div class="crow"><span class="ci">T</span><span class="t">Typewolf — 字体参考</span><span class="d">typewolf.com</span></div>
+            </div>
+          </div>
+
+          <div class="mock-sec">
+            <div class="sec-label">
+              <span class="t" style="font-size:16px;font-weight:600;letter-spacing:0;color:var(--text)">设计参考</span>
+              <span class="c">18 项</span><span class="rule"></span>
+            </div>
+            <div class="grid-cards" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+              <div class="card"><div class="card-icon">D</div><div class="card-body"><div class="card-title">Dribbble</div><div class="card-domain">dribbble.com</div></div></div>
+              <div class="card"><div class="card-icon">M</div><div class="card-body"><div class="card-title">Mobbin</div><div class="card-domain">mobbin.com</div></div></div>
+              <div class="card"><div class="card-icon">T</div><div class="card-body"><div class="card-title">Typewolf</div><div class="card-domain">typewolf.com</div></div></div>
+              <div class="card"><div class="card-icon">C</div><div class="card-body"><div class="card-title">Coolors</div><div class="card-domain">coolors.co</div></div></div>
+              <div class="card"><div class="card-icon">A</div><div class="card-body"><div class="card-title">Awwwards</div><div class="card-domain">awwwards.com</div></div></div>
+              <div class="card"><div class="card-icon">站</div><div class="card-body"><div class="card-title">站酷 ZCOOL</div><div class="card-domain">zcool.com.cn</div></div></div>
+              <div class="card"><div class="card-icon">B</div><div class="card-body"><div class="card-title">Behance</div><div class="card-domain">behance.net</div></div></div>
+              <div class="card"><div class="card-icon">P</div><div class="card-body"><div class="card-title">Pinterest</div><div class="card-domain">pinterest.com</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 05 深色 ═════════════════════════════════════════════════ -->
+  <section class="dark-block" data-theme="dark">
+    <div class="dark-head"><span class="kicker" style="font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary)">05</span><h2>新标签页 · 深色</h2></div>
+    <p class="dark-note">
+      同一套结构，只换明度关系。深色下强调色改为"被灯照亮的墨"，所有表面仍保持 canvas 比 bg 亮一档。
+      阴影在深色里几乎不可见，因此浮层额外靠 1px 描边保证边缘可辨。
+    </p>
+
+    <div class="pal-strip">
+      <i style="background:var(--bg)"></i><i style="background:var(--canvas)"></i><i style="background:var(--surface)"></i>
+      <i style="background:var(--surface-hover)"></i><i style="background:var(--surface-active)"></i>
+      <i style="background:var(--line)"></i><i style="background:var(--line-strong)"></i>
+      <i style="background:var(--text)"></i><i style="background:var(--text-secondary)"></i>
+      <i style="background:var(--text-tertiary)"></i><i style="background:var(--accent)"></i>
+      <i style="background:var(--accent-soft)"></i><i style="background:var(--danger)"></i>
+      <i style="background:var(--focus)"></i>
+    </div>
+    <div class="pal-legend">
+      <div><b style="background:var(--bg)"></b>--bg #131210</div>
+      <div><b style="background:var(--canvas)"></b>--canvas #1A1916</div>
+      <div><b style="background:var(--surface)"></b>--surface #221F1B</div>
+      <div><b style="background:var(--text)"></b>--text #EAE5DB</div>
+      <div><b style="background:var(--text-secondary)"></b>--text-2 #B4ADA0</div>
+      <div><b style="background:var(--text-tertiary)"></b>--text-3 #9C9588</div>
+      <div><b style="background:var(--accent)"></b>--accent #7FB3CE</div>
+      <div><b style="background:var(--focus)"></b>--focus #8CC0DC</div>
+    </div>
+
+    <div style="display:flex;gap:32px;align-items:flex-start;margin:32px 0 28px;flex-wrap:wrap">
+      <div>
+        <div class="demo-label">菜单 · 高亮</div>
+        <div class="menu">
+          <div class="mi"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5"/></svg>在新标签页打开<span class="short">↵</span></div>
+          <div class="mi is-active"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 2v7M4 6l3 3 3-3M2.5 11.5h9"/></svg>置顶</div>
+          <div class="mi"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2.5h10v7H8l-3 2.5v-2.5H2z"/></svg>二维码</div>
+          <div class="sep"></div>
+          <div class="mi is-danger"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 4h9M5 4V2.5h4V4M4 4l.5 7.5h5L10 4"/></svg>删除</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">Toast · 深色下是抬起的面，不是墨块</div>
+        <div class="toast"><span>已保存到「设计参考」</span><button class="toast-action" type="button">撤销</button></div>
+      </div>
+      <div>
+        <div class="demo-label">文件夹树 · 选中 / 拖拽悬停</div>
+        <div class="tree" style="width:240px">
+          <div class="tree-row lvl1 is-active">
+            <span class="spine" style="--s:var(--spine-4)"></span>
+            <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">设计参考</span><span class="count">18</span>
+          </div>
+          <div class="tree-row lvl2 is-drop">
+            <span class="spine" style="--s:var(--spine-2)"></span>
+            <span class="chev hide"></span>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+            <span class="label">阅读</span><span class="count">41</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mock">
+      <aside class="mock-side">
+        <div class="mock-side-head">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5h9v13l-4.5-3.2-4.5 3.2z"/></svg>
+          <span class="wordmark">Markoob</span>
+          <span class="collapse icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9.5 4 5.5 8l4 4"/></svg></span>
+        </div>
+        <div class="mock-tree">
+          <div class="tree">
+            <div class="tree-row lvl1">
+              <span class="spine" style="background:transparent"></span>
+              <svg class="chev hide"></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 2.5h4.5v4.5H2.5zM9 2.5h4.5v4.5H9zM2.5 9h4.5v4.5H2.5zM9 9h4.5v4.5H9z"/></svg>
+              <span class="label">全部书签</span><span class="count">128</span>
+            </div>
+            <div class="tree-row lvl1" style="margin-top:6px">
+              <span class="spine" style="--s:var(--spine-1)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">工具栏</span><span class="count">36</span>
+            </div>
+            <div class="tree-row lvl2">
+              <span class="spine" style="--s:var(--spine-4)"></span>
+              <span class="chev hide"></span>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">设计参考</span><span class="count">18</span>
+            </div>
+            <div class="tree-row lvl2 is-active">
+              <span class="spine" style="--s:var(--spine-5)"></span>
+              <span class="chev hide"></span>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">开发文档</span><span class="count">24</span>
+            </div>
+            <div class="tree-row lvl2">
+              <span class="spine" style="--s:var(--spine-2)"></span>
+              <span class="chev hide"></span>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">阅读</span><span class="count">41</span>
+            </div>
+            <div class="tree-row lvl1">
+              <span class="spine" style="--s:var(--spine-3)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3.5 9 7l-3.5 3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">书签菜单</span><span class="count">12</span>
+            </div>
+            <div class="tree-row lvl1">
+              <span class="spine" style="--s:var(--spine-6)"></span>
+              <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5.5 3.5 9 7l-3.5 3.5"/></svg>
+              <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg>
+              <span class="label">未分类</span><span class="count">7</span>
+            </div>
+          </div>
+        </div>
+        <div class="mock-side-foot">
+          <div class="tree-row lvl1" style="padding-left:8px">
+            <span class="spine" style="background:transparent;margin-right:2px"></span>
+            <svg class="fi" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1"/></svg>
+            <span class="label">设置</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="mock-main">
+        <div class="mock-top">
+          <div class="field is-focus">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+            <span class="field-text ph">搜索书签、文件夹…</span>
+            <span class="keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+          </div>
+          <div class="mock-top-actions">
+            <span class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 2.5h4.5v4.5H2.5zM9 2.5h4.5v4.5H9zM2.5 9h4.5v4.5H2.5zM9 9h4.5v4.5H9z"/></svg></span>
+            <span class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h7M2.5 11.5h9"/></svg></span>
+            <span class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3h10v10H3z"/><path d="M6 3v10"/></svg></span>
+          </div>
+        </div>
+
+        <div class="mock-body">
+          <div class="mock-sec">
+            <div class="sec-label"><span class="t">置顶</span><span class="c">4</span><span class="rule"></span></div>
+            <div class="grid-cards" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+              <div class="card"><div class="card-icon">G</div><div class="card-body"><div class="card-title">GitHub</div><div class="card-domain">github.com</div></div></div>
+              <div class="card is-hover"><div class="card-icon">F</div><div class="card-body"><div class="card-title">Figma</div><div class="card-domain">figma.com</div></div></div>
+              <div class="card"><div class="card-icon">M</div><div class="card-body"><div class="card-title">MDN Web 文档</div><div class="card-domain">developer.mozilla.org</div></div></div>
+              <div class="card card-folder">
+                <span class="cspine" style="--s:var(--spine-4)"></span>
+                <div class="card-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h4l1.2 1.5H14v6.5H2z"/></svg></div>
+                <div class="card-body"><div class="card-title">设计参考</div><div class="card-domain">18 项</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mock-sec">
+            <div class="sec-label"><span class="t">为你推荐</span><span class="c">6</span><span class="rule"></span></div>
+            <div class="mock-rec">
+              <div class="crow"><span class="ci">H</span><span class="t">Hacker News</span><span class="d">news.ycombinator.com</span></div>
+              <div class="crow is-hover"><span class="ci">少</span><span class="t">少数派</span><span class="d">sspai.com</span></div>
+              <div class="crow"><span class="ci">A</span><span class="t">Are.na</span><span class="d">are.na</span></div>
+              <div class="crow"><span class="ci">F</span><span class="t">Firefox 附加组件</span><span class="d">addons.mozilla.org</span></div>
+              <div class="crow"><span class="ci">维</span><span class="t">维基百科</span><span class="d">zh.wikipedia.org</span></div>
+              <div class="crow"><span class="ci">T</span><span class="t">Typewolf — 字体参考</span><span class="d">typewolf.com</span></div>
+            </div>
+          </div>
+
+          <div class="mock-sec">
+            <div class="sec-label">
+              <span class="t" style="font-size:16px;font-weight:600;letter-spacing:0;color:var(--text)">开发文档</span>
+              <span class="c">24 项</span><span class="rule"></span>
+            </div>
+            <div class="grid-cards" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+              <div class="card"><div class="card-icon">M</div><div class="card-body"><div class="card-title">MDN Web 文档</div><div class="card-domain">developer.mozilla.org</div></div></div>
+              <div class="card"><div class="card-icon">W</div><div class="card-body"><div class="card-title">web-ext 文档</div><div class="card-domain">extensionworkshop.com</div></div></div>
+              <div class="card"><div class="card-icon">C</div><div class="card-body"><div class="card-title">Can I use</div><div class="card-domain">caniuse.com</div></div></div>
+              <div class="card"><div class="card-icon">S</div><div class="card-body"><div class="card-title">Spec — CSS Grid</div><div class="card-domain">w3.org</div></div></div>
+              <div class="card"><div class="card-icon">N</div><div class="card-body"><div class="card-title">Node.js API</div><div class="card-domain">nodejs.org</div></div></div>
+              <div class="card"><div class="card-icon">S</div><div class="card-body"><div class="card-title">Svelte 文档</div><div class="card-domain">svelte.dev</div></div></div>
+              <div class="card"><div class="card-icon">V</div><div class="card-body"><div class="card-title">Vite 中文文档</div><div class="card-domain">cn.vitejs.dev</div></div></div>
+              <div class="card"><div class="card-icon">G</div><div class="card-body"><div class="card-title">Git 手册</div><div class="card-domain">git-scm.com</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span>数值全部来自 shared/tokens.css · 对比度实测见 docs/design-spec.md §7</span>
+      <span class="mono">Markoob for Firefox · v0.1</span>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,656 @@
+/* ============================================================================
+   i18n.js — zh / en copy, t(), and DOM localisation.
+
+   Keys are deliberately flat and semantic. Anything user-visible in newtab or
+   popup must come from here; no hardcoded Chinese/English in the view layer.
+
+   API
+     MK.i18n.lang                 'zh' | 'en'
+     MK.i18n.resolve(pref)        'auto'|'zh'|'en' -> 'zh'|'en'
+     MK.i18n.setLang('zh'|'en')   updates <html lang> + localStorage mirror
+     MK.i18n.t(key, params)       string with {{param}} interpolation
+     MK.i18n.apply(root)          fills [data-i18n], [data-i18n-aria],
+                                  [data-i18n-title], [data-i18n-ph]
+   ========================================================================== */
+
+(function () {
+  'use strict';
+  var MK = (window.MK = window.MK || {});
+
+  var ZH = {
+    /* ── 通用 ─────────────────────────────────────────────────────────────── */
+    appName: 'Tabmark',
+    appDesc: '把书签整理成一张干净的书桌，新标签页一屏直达。',
+    search: '搜索书签',
+    searchHint: '搜索网页、书签',
+    historySearch: '搜索历史记录',
+    rangeToday: '今天',
+    rangeYesterday: '昨天',
+    range7: '近 7 天',
+    range30: '近 30 天',
+    rangeAll: '全部',
+    historyClear: '清除历史',
+    historyClearDesc: '将删除浏览器中的全部历史记录，无法撤销。确定清除？',
+    historyEmpty: '没有匹配的浏览记录',
+    historyCleared: '浏览历史已清除',
+    wallpaperInk: '文字颜色',
+    inkAuto: '自动',
+    inkLight: '浅色',
+    inkDark: '深色',
+    allBookmarks: '全部书签',
+    pinned: '置顶',
+    recentVisits: '最近浏览',
+    foldersSection: '文件夹',
+    recentlyAdded: '最近添加',
+    loading: '正在读取书签…',
+    errorTitle: '读不到书签',
+    errorHint: 'Firefox 没有授予书签权限。请到扩展管理里允许后重试。',
+    retry: '重试',
+    previewNote: '预览模式：未连接 Firefox 书签接口，数据只存在本页。',
+    previewShort: '预览',
+
+    /* ── 空状态 ───────────────────────────────────────────────────────────── */
+    emptyState: '这里还没有书签',
+    emptyStateHint: '在地址栏点星标收藏页面，或点右上角的 ＋ 手动添加。',
+    emptyFolderTitle: '空文件夹',
+    emptyFolderHint: '把书签拖进来，或用 ＋ 新建一个。',
+    emptyPinnedTitle: '还没有置顶',
+    emptyPinnedHint: '在任意书签上右键，选择「置顶」，常用入口就会排在最上面。',
+    recentEmptyTitle: '还没有浏览记录',
+    recentEmptyHint: 'Firefox 的历史记录为空，或者没有授予访问权限。',
+    recentAllSavedHint: '最近访问的页面都已经收藏了，回书签里就能找到。',
+    folderAria: '{{title}}，文件夹，{{n}} 项',
+    noResults: '没有找到「{{q}}」',
+    noResultsHint: '换个关键词，或者直接去网上搜索。',
+    searchWebFor: '在网页中搜索「{{q}}」',
+
+    /* ── 分组 ─────────────────────────────────────────────────────────────── */
+    historyGroup: '浏览历史',
+    bookmarksGroup: '书签',
+    foldersGroup: '文件夹',
+    items: '{{n}} 项',
+    bookmarkCount: '{{n}} 个书签',
+    folderCount: '{{n}} 个文件夹',
+
+    /* ── 排序 ─────────────────────────────────────────────────────────────── */
+    sort: '排序',
+    sortDefault: '默认顺序',
+    sortName: '名称',
+    sortAdded: '添加时间',
+    sortUsage: '使用频率',
+
+    /* ── 操作 ─────────────────────────────────────────────────────────────── */
+    add: '添加',
+    addBookmark: '添加书签',
+    addFolder: '新建文件夹',
+    settings: '设置',
+    edit: '编辑',
+    delete: '删除',
+    rename: '重命名',
+    done: '完成',
+    cancel: '取消',
+    save: '保存',
+    close: '关闭',
+    copyUrl: '复制链接',
+    copied: '已复制',
+    qrCode: '二维码',
+    downloadQr: '下载图片',
+    copyLink: '复制链接',
+    pin: '置顶',
+    unpin: '取消置顶',
+    openInNewTab: '在新标签页打开',
+    openInNewWindow: '在新窗口打开',
+    openInPrivate: '在隐私窗口打开',
+    openAllNewTab: '在新标签页打开全部（{{n}}）',
+    openFolder: '打开文件夹',
+    viewAll: '查看全部',
+    moreActions: '更多操作',
+    itemMenu: '书签操作',
+    folderMenu: '文件夹操作',
+    menuBlank: '更多操作',
+    backToAll: '返回全部书签',
+    sidebarCollapse: '收起侧栏',
+    sidebarExpand: '展开侧栏',
+    expandFolder: '展开',
+    collapseFolder: '收起',
+    clearSearch: '清除搜索',
+    dropToMove: '拖到文件夹即可移动',
+
+    /* ── 表单 ─────────────────────────────────────────────────────────────── */
+    titleLabel: '标题',
+    titleHint: '书签标题',
+    urlLabel: '链接',
+    urlHint: 'https://example.com',
+    folderLabel: '文件夹',
+    nameLabel: '名称',
+    nameHint: '文件夹名称',
+    addBookmarkTitle: '添加书签',
+    editBookmarkTitle: '编辑书签',
+    addFolderTitle: '新建文件夹',
+    renameFolderTitle: '重命名文件夹',
+
+    /* ── 删除与撤销 ───────────────────────────────────────────────────────── */
+    deleteBookmarkTitle: '删除这个书签？',
+    deleteBookmarkDesc: '「{{name}}」将从书签中移除，你可以马上撤销。',
+    deleteFolderTitle: '删除这个文件夹？',
+    deleteFolderDesc: '「{{name}}」及其中所有内容都会被永久删除，且无法撤销。',
+    deletedBookmark: '书签已删除',
+    deletedFolder: '文件夹已删除',
+    undo: '撤销',
+    restored: '已恢复',
+    movedTo: '已移动到「{{folder}}」',
+    moveFailed: '移动失败',
+    bookmarkPinned: '已置顶',
+    bookmarkUnpinned: '已取消置顶',
+    folderPinned: '文件夹已置顶',
+    folderUnpinned: '已取消置顶',
+
+    /* ── 错误 ─────────────────────────────────────────────────────────────── */
+    privateBlocked: '无法打开隐私窗口，请在扩展详情中允许「在隐私窗口运行」。',
+    fileUrlBlocked: 'Firefox 扩展不能直接打开本地文件，链接已复制。',
+    bookmarkletBlocked: '这类链接无法直接打开。',
+    saveFailed: '保存失败：{{what}}',
+    permissionDenied: '权限不足：{{what}}',
+    copyFailed: '复制失败',
+
+    /* ── 设置 ─────────────────────────────────────────────────────────────── */
+    theme: '主题',
+    systemTheme: '跟随系统',
+    lightTheme: '浅色',
+    darkTheme: '深色',
+    language: '语言',
+    autoDetect: '自动检测',
+    zhLabel: '中文',
+    enLabel: 'English',
+    openWith: '打开方式',
+    newTab: '新标签页',
+    currentTab: '当前标签页',
+    recommendations: '最近浏览',
+    recommendationsDesc: '在首页展示最近访问的网站，数据只在本机计算。',
+    searchHistory: '搜索包含历史',
+    searchHistoryDesc: '搜索书签时一并显示浏览历史里的匹配项。',
+    about: '关于',
+    version: '版本 {{v}}',
+    privacyNote: '所有数据都留在你的浏览器里，Tabmark 不做任何网络请求。',
+    resetUsage: '清除使用记录',
+    resetUsageDesc: '清空用于排序和推荐的打开次数统计。',
+    resetUsageDone: '已清除使用记录',
+    shortcuts: '快捷键',
+    shortcutSearch: '聚焦搜索',
+    shortcutAdd: '添加书签',
+    shortcutSettings: '打开设置',
+    shortcutEsc: '关闭当前面板',
+    dataSection: '数据',
+    behaviorSection: '行为',
+    appearanceSection: '外观',
+    aboutSection: '关于',
+
+    /* ── 根目录名称 ───────────────────────────────────────────────────────── */
+    bookmarksToolbar: '书签工具栏',
+    bookmarksMenu: '书签菜单',
+    otherBookmarks: '其他书签',
+    mobileBookmarks: '移动端书签',
+    folder: '文件夹',
+
+    /* ── 二维码 ───────────────────────────────────────────────────────────── */
+    qrTitle: '二维码',
+    qrHint: '用手机相机扫描，即可在手机上打开这个页面。',
+
+    /* ── 弹窗 ─────────────────────────────────────────────────────────────── */
+    bookmarkPage: '收藏此页',
+    bookmarked: '已收藏',
+    notBookmarked: '未收藏',
+    usePageTitle: '改用页面标题',
+    savedTo: '已收藏到「{{folder}}」',
+    saved: '已保存',
+    removed: '已取消收藏',
+    openNewtab: '打开书签台',
+    openSettings: '设置',
+    noActiveTab: '读不到当前页面',
+    privateNote: '隐私窗口',
+    quickSave: '收藏',
+    changeFolder: '更改文件夹',
+    syncTitle: '同步标题',
+    ppEditTitle: '编辑标题',
+    ppSaveHere: '保存到',
+    ppAlready: '这个页面已在书签中',
+    ppFolderTip: '下次会默认存到这里',
+
+    /* ── 搜索下拉与搜索引擎 ───────────────────────────────────────────────── */
+    searchEngine: '搜索引擎',
+    enginesTitle: '搜索引擎设置',
+    searchWebWith: '用 {{name}} 搜索「{{q}}」',
+    searchNoMatch: '没有匹配的结果',
+    searchNoMatchHint: '回车用 {{name}} 搜索「{{q}}」',
+    historyTag: '历史',
+    engineAdd: '添加搜索引擎',
+    engineNameLabel: '名称',
+    engineNamePh: '例如 Kagi',
+    engineUrlLabel: '搜索地址',
+    engineUrlPh: 'https://example.com/search?q=%s',
+    engineUrlHint: '用 %s 代表关键词，例如 https://example.com/search?q=%s',
+    engineRestore: '恢复默认',
+    engineHide: '隐藏',
+    engineShow: '显示',
+    engineDelete: '删除',
+    engineKeepOne: '至少保留一个可见的搜索引擎',
+    engineInvalid: '请填写名称和包含 %s 的地址',
+    engineAdded: '已添加搜索引擎',
+    engineRemoved: '已删除',
+    engineMoveUp: '上移',
+    engineMoveDown: '下移',
+    engineManage: '管理搜索引擎…',
+
+    /* ── 文件夹聚合视图 ───────────────────────────────────────────────────── */
+    inThisFolder: '本层书签',
+    subfoldersOnly: '子文件夹',
+    folderTotal: '{{n}} 项',
+
+    /* ── 整理 ─────────────────────────────────────────────────────────────── */
+    organize: '整理',
+    organizeTitle: '整理书签',
+    organizeBackup: '备份',
+    organizeBackupDesc: '导出全部书签为 JSON 文件，留作还原依据。',
+    organizeBackupRun: '导出备份',
+    organizeBackupDone: '已导出 {{n}} 项',
+    organizeDup: '重复书签',
+    organizeDupDesc: '检测指向同一网址的多份书签。',
+    organizeDupScan: '扫描',
+    organizeDupNone: '没有发现重复书签',
+    organizeDupFound: '发现 {{n}} 组重复，共 {{m}} 项',
+    organizeDupFix: '删除其余 {{n}} 项',
+    organizeDupDone: '已删除 {{n}} 项重复书签',
+    organizeDupFirst: '请先导出备份，再删除重复项',
+    organizeIcons: '站点图标',
+    organizeIconsDesc: '从已打开的标签页与本地缓存补全图标。',
+    organizeIconsRun: '补全图标',
+    organizeIconsDone: '补全了 {{n}} 个图标',
+    organizeIconsNone: '没有可补全的图标',
+    organizeRemote: '向站点请求图标',
+    organizeRemoteDesc: '关闭时只用本地缓存，未命中的站点显示字母色块。开启后会向各网站请求 favicon。',
+    organizeClean: '清理',
+    organizeCleanDesc: '删除空文件夹，并为无标题书签补上域名。',
+    organizeCleanRun: '开始清理',
+    organizeCleanNone: '没有需要清理的内容',
+    organizeCleanDone: '清理了 {{n}} 项',
+    organizeUndoHint: '删除不可撤销，建议先导出备份。',
+    organizeDuplicatesUnit: '组',
+    organizeItemsUnit: '项',
+
+    /* ── 设置：墙纸与分组 ─────────────────────────────────────────────────── */
+    searchSection: '搜索',
+    bookmarksSection: '书签',
+    wallpaper: '背景墙纸',
+    wallpaperNone: '无',
+    wallpaperGradient: '渐变',
+    wallpaperImage: '图片',
+    wallpaperPick: '选择图片',
+    wallpaperClear: '移除图片',
+    wallpaperDim: '遮罩浓度',
+    wallpaperHint: '图片会在本机压缩后保存，不会上传。',
+    wallpaperTooBig: '图片过大，请选择 8MB 以内的图片',
+    wallpaperFailed: '这张图片读不出来',
+    sidebarWidth: '侧栏宽度',
+    bookmarkStyle: '书签风格',
+    styleCard: '卡片风格',
+    styleCompact: '紧凑风格',
+    layoutType: '布局',
+    layoutRow: '行布局',
+    layoutCol: '列布局',
+    layoutCompactOnly: '列布局仅在紧凑风格下可用',
+    fontSize: '字体大小',
+    fontSizeHint: '拖动滑块实时预览，范围 0.8 – 1.3',
+    styleAdjust: '调整',
+    bookmarkWidth: '书签宽度',
+    bookmarkWidthHint: '拖动滑块实时预览，范围 0.5 – 1.5',
+    disableAnim: '禁用书签动画',
+    sizeSmall: '小',
+    sizeDefault: '默认',
+    sizeLarge: '大',
+    sizeNarrow: '窄',
+    sizeWide: '宽',
+    sidebarResetHint: '拖动可调宽，双击复位'
+  };
+
+  var EN = {
+    appName: 'Tabmark',
+    appDesc: 'A calm, local-first bookmark desk on every new tab.',
+    search: 'Search bookmarks',
+    searchHint: 'Search web or bookmarks',
+    historySearch: 'Search history',
+    rangeToday: 'Today',
+    rangeYesterday: 'Yesterday',
+    range7: 'Last 7 days',
+    range30: 'Last 30 days',
+    rangeAll: 'All time',
+    historyClear: 'Clear history',
+    historyClearDesc: 'This deletes ALL browser history and cannot be undone. Clear it?',
+    historyEmpty: 'No matching history',
+    historyCleared: 'History cleared',
+    wallpaperInk: 'Text color',
+    inkAuto: 'Auto',
+    inkLight: 'Light',
+    inkDark: 'Dark',
+    allBookmarks: 'All bookmarks',
+    pinned: 'Pinned',
+    recentVisits: 'Recently visited',
+    foldersSection: 'Folders',
+    recentlyAdded: 'Recently added',
+    loading: 'Reading bookmarks…',
+    errorTitle: 'Bookmarks unavailable',
+    errorHint: 'Firefox blocked bookmark access. Allow it in the add-on manager and retry.',
+    retry: 'Retry',
+    previewNote: 'Preview mode: no Firefox bookmark API, data stays on this page.',
+    previewShort: 'Preview',
+
+    emptyState: 'No bookmarks here yet',
+    emptyStateHint: 'Star a page in the address bar, or use ＋ in the corner.',
+    emptyFolderTitle: 'Empty folder',
+    emptyFolderHint: 'Drop a bookmark here, or create one with ＋.',
+    emptyPinnedTitle: 'Nothing pinned yet',
+    emptyPinnedHint: 'Right-click any bookmark and choose “Pin” to keep it on top.',
+    recentEmptyTitle: 'No history yet',
+    recentEmptyHint: 'Firefox history is empty, or access wasn’t granted.',
+    recentAllSavedHint: 'Every recent page is already bookmarked — you’ll find them in your bookmarks.',
+    folderAria: '{{title}}, folder, {{n}} items',
+    noResults: 'Nothing found for “{{q}}”',
+    noResultsHint: 'Try another word, or search the web.',
+    searchWebFor: 'Search the web for “{{q}}”',
+
+    historyGroup: 'History',
+    bookmarksGroup: 'Bookmarks',
+    foldersGroup: 'Folders',
+    items: '{{n}} items',
+    bookmarkCount: '{{n}} bookmarks',
+    folderCount: '{{n}} folders',
+
+    sort: 'Sort',
+    sortDefault: 'Default',
+    sortName: 'Name',
+    sortAdded: 'Date added',
+    sortUsage: 'Most used',
+
+    add: 'Add',
+    addBookmark: 'Add bookmark',
+    addFolder: 'New folder',
+    settings: 'Settings',
+    edit: 'Edit',
+    delete: 'Delete',
+    rename: 'Rename',
+    done: 'Done',
+    cancel: 'Cancel',
+    save: 'Save',
+    close: 'Close',
+    copyUrl: 'Copy link',
+    copied: 'Copied',
+    qrCode: 'QR code',
+    downloadQr: 'Download image',
+    copyLink: 'Copy link',
+    pin: 'Pin',
+    unpin: 'Unpin',
+    openInNewTab: 'Open in new tab',
+    openInNewWindow: 'Open in new window',
+    openInPrivate: 'Open in private window',
+    openAllNewTab: 'Open all in new tabs ({{n}})',
+    openFolder: 'Open folder',
+    viewAll: 'View all',
+    moreActions: 'More actions',
+    itemMenu: 'Bookmark actions',
+    folderMenu: 'Folder actions',
+    menuBlank: 'More actions',
+    backToAll: 'Back to all bookmarks',
+    sidebarCollapse: 'Collapse sidebar',
+    sidebarExpand: 'Expand sidebar',
+    expandFolder: 'Expand',
+    collapseFolder: 'Collapse',
+    clearSearch: 'Clear search',
+    dropToMove: 'Drop onto a folder to move',
+
+    titleLabel: 'Title',
+    titleHint: 'Bookmark title',
+    urlLabel: 'URL',
+    urlHint: 'https://example.com',
+    folderLabel: 'Folder',
+    nameLabel: 'Name',
+    nameHint: 'Folder name',
+    addBookmarkTitle: 'Add bookmark',
+    editBookmarkTitle: 'Edit bookmark',
+    addFolderTitle: 'New folder',
+    renameFolderTitle: 'Rename folder',
+
+    deleteBookmarkTitle: 'Delete this bookmark?',
+    deleteBookmarkDesc: '“{{name}}” will be removed from your bookmarks. You can undo this right away.',
+    deleteFolderTitle: 'Delete this folder?',
+    deleteFolderDesc: '“{{name}}” and everything inside will be permanently deleted. This cannot be undone.',
+    deletedBookmark: 'Bookmark deleted',
+    deletedFolder: 'Folder deleted',
+    undo: 'Undo',
+    restored: 'Restored',
+    movedTo: 'Moved to “{{folder}}”',
+    moveFailed: 'Could not move',
+    bookmarkPinned: 'Pinned',
+    bookmarkUnpinned: 'Unpinned',
+    folderPinned: 'Folder pinned',
+    folderUnpinned: 'Folder unpinned',
+
+    privateBlocked: 'Can’t open a private window. Allow “Run in Private Windows” in the add-on details.',
+    fileUrlBlocked: 'Firefox add-ons can’t open local files. The link was copied instead.',
+    bookmarkletBlocked: 'This kind of link can’t be opened directly.',
+    saveFailed: 'Couldn’t save: {{what}}',
+    permissionDenied: 'Permission denied: {{what}}',
+    copyFailed: 'Couldn’t copy',
+
+    theme: 'Theme',
+    systemTheme: 'System',
+    lightTheme: 'Light',
+    darkTheme: 'Dark',
+    language: 'Language',
+    autoDetect: 'Auto',
+    zhLabel: '中文',
+    enLabel: 'English',
+    openWith: 'Open bookmarks in',
+    newTab: 'New tab',
+    currentTab: 'Current tab',
+    recommendations: 'Recently visited',
+    recommendationsDesc: 'Show sites you visited lately on the home view. Computed locally.',
+    searchHistory: 'Search history too',
+    searchHistoryDesc: 'Include matching pages from your browsing history in search.',
+    about: 'About',
+    version: 'Version {{v}}',
+    privacyNote: 'Everything stays in your browser. Tabmark makes no network requests.',
+    resetUsage: 'Clear usage data',
+    resetUsageDesc: 'Erase open counts used for sorting and recommendations.',
+    resetUsageDone: 'Usage data cleared',
+    shortcuts: 'Shortcuts',
+    shortcutSearch: 'Focus search',
+    shortcutAdd: 'Add bookmark',
+    shortcutSettings: 'Open settings',
+    shortcutEsc: 'Close the open panel',
+    dataSection: 'Data',
+    behaviorSection: 'Behaviour',
+    appearanceSection: 'Appearance',
+    aboutSection: 'About',
+
+    bookmarksToolbar: 'Bookmarks Toolbar',
+    bookmarksMenu: 'Bookmarks Menu',
+    otherBookmarks: 'Other Bookmarks',
+    mobileBookmarks: 'Mobile Bookmarks',
+    folder: 'Folder',
+
+    qrTitle: 'QR code',
+    qrHint: 'Scan with your phone camera to open this page on mobile.',
+
+    bookmarkPage: 'Bookmark this page',
+    bookmarked: 'Bookmarked',
+    notBookmarked: 'Not bookmarked',
+    usePageTitle: 'Use page title',
+    savedTo: 'Saved to “{{folder}}”',
+    saved: 'Saved',
+    removed: 'Bookmark removed',
+    openNewtab: 'Open Tabmark',
+    openSettings: 'Settings',
+    noActiveTab: 'No active page',
+    privateNote: 'Private window',
+    quickSave: 'Save',
+    changeFolder: 'Change folder',
+    syncTitle: 'Sync title',
+    ppEditTitle: 'Edit title',
+    ppSaveHere: 'Save to',
+    ppAlready: 'This page is already bookmarked',
+    ppFolderTip: 'Next save goes here',
+
+    /* ── search popover & engines ─────────────────────────────────────────── */
+    searchEngine: 'Search engine',
+    enginesTitle: 'Search engines',
+    searchWebWith: 'Search {{name}} for “{{q}}”',
+    searchNoMatch: 'No matching results',
+    searchNoMatchHint: 'Press Enter to search {{name}} for “{{q}}”',
+    historyTag: 'History',
+    engineAdd: 'Add engine',
+    engineNameLabel: 'Name',
+    engineNamePh: 'e.g. Kagi',
+    engineUrlLabel: 'Search URL',
+    engineUrlPh: 'https://example.com/search?q=%s',
+    engineUrlHint: 'Use %s for the query, e.g. https://example.com/search?q=%s',
+    engineRestore: 'Restore defaults',
+    engineHide: 'Hide',
+    engineShow: 'Show',
+    engineDelete: 'Delete',
+    engineKeepOne: 'Keep at least one visible engine',
+    engineInvalid: 'Enter a name and a URL containing %s',
+    engineAdded: 'Engine added',
+    engineRemoved: 'Removed',
+    engineMoveUp: 'Move up',
+    engineMoveDown: 'Move down',
+    engineManage: 'Manage search engines…',
+
+    /* ── folder aggregate view ────────────────────────────────────────────── */
+    inThisFolder: 'In this folder',
+    subfoldersOnly: 'Subfolders',
+    folderTotal: '{{n}} items',
+
+    /* ── organize ─────────────────────────────────────────────────────────── */
+    organize: 'Organize',
+    organizeTitle: 'Organize bookmarks',
+    organizeBackup: 'Back up',
+    organizeBackupDesc: 'Export every bookmark as a JSON file you can keep.',
+    organizeBackupRun: 'Export backup',
+    organizeBackupDone: 'Exported {{n}} items',
+    organizeDup: 'Duplicates',
+    organizeDupDesc: 'Find bookmarks pointing at the same URL.',
+    organizeDupScan: 'Scan',
+    organizeDupNone: 'No duplicates found',
+    organizeDupFound: '{{n}} duplicate groups, {{m}} items',
+    organizeDupFix: 'Delete the other {{n}}',
+    organizeDupDone: 'Removed {{n}} duplicates',
+    organizeDupFirst: 'Export a backup before deleting',
+    organizeIcons: 'Site icons',
+    organizeIconsDesc: 'Fill icons from open tabs and the local cache.',
+    organizeIconsRun: 'Fill icons',
+    organizeIconsDone: 'Added {{n}} icons',
+    organizeIconsNone: 'Nothing to fill in',
+    organizeRemote: 'Request icons from sites',
+    organizeRemoteDesc: 'Off: local cache only, misses show a letter tile. On: each site is asked for its favicon.',
+    organizeClean: 'Clean up',
+    organizeCleanDesc: 'Remove empty folders and give untitled bookmarks their domain.',
+    organizeCleanRun: 'Clean up now',
+    organizeCleanNone: 'Nothing to clean up',
+    organizeCleanDone: 'Cleaned {{n}} items',
+    organizeUndoHint: 'Deletes cannot be undone here — export a backup first.',
+    organizeDuplicatesUnit: 'groups',
+    organizeItemsUnit: 'items',
+
+    /* ── settings: wallpaper & groups ─────────────────────────────────────── */
+    searchSection: 'Search',
+    bookmarksSection: 'Bookmarks',
+    wallpaper: 'Background',
+    wallpaperNone: 'None',
+    wallpaperGradient: 'Gradient',
+    wallpaperImage: 'Image',
+    wallpaperPick: 'Choose image',
+    wallpaperClear: 'Remove image',
+    wallpaperDim: 'Dim',
+    wallpaperHint: 'The image is compressed and stored locally, never uploaded.',
+    wallpaperTooBig: 'Image too large — pick one under 8 MB',
+    wallpaperFailed: 'That image could not be read',
+    sidebarWidth: 'Sidebar width',
+    bookmarkStyle: 'Bookmark style',
+    styleCard: 'Card style',
+    styleCompact: 'Compact style',
+    layoutType: 'Layout',
+    layoutRow: 'Row layout',
+    layoutCol: 'Column layout',
+    layoutCompactOnly: 'Column layout is only available with the compact style',
+    fontSize: 'Font size',
+    fontSizeHint: 'Drag the slider to preview, 0.8 – 1.3',
+    styleAdjust: 'Adjust',
+    bookmarkWidth: 'Bookmark width',
+    bookmarkWidthHint: 'Drag the slider to preview, 0.5 – 1.5',
+    disableAnim: 'Disable bookmark animations',
+    sizeSmall: 'Small',
+    sizeDefault: 'Default',
+    sizeLarge: 'Large',
+    sizeNarrow: 'Narrow',
+    sizeWide: 'Wide',
+    sidebarResetHint: 'Drag to resize, double-click to reset'
+  };
+
+  var DICT = { zh: ZH, en: EN };
+  var lang = 'zh';
+
+  function detect() {
+    var nav = (navigator.language || 'zh').toLowerCase();
+    return nav.indexOf('zh') === 0 ? 'zh' : 'en';
+  }
+
+  function resolve(pref) {
+    if (pref === 'zh' || pref === 'en') return pref;
+    return detect();
+  }
+
+  function setLang(next) {
+    lang = DICT[next] ? next : detect();
+    document.documentElement.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+    try { window.localStorage.setItem('tabmark.lang', lang); } catch (e) { /* ignore */ }
+  }
+
+  function t(key, params) {
+    var table = DICT[lang] || ZH;
+    var s = table[key];
+    if (s === undefined) s = ZH[key];
+    if (s === undefined) return key;
+    if (!params) return s;
+    return s.replace(/\{\{(\w+)\}\}/g, function (m, name) {
+      return params[name] === undefined || params[name] === null ? '' : String(params[name]);
+    });
+  }
+
+  function apply(root) {
+    var scope = root || document;
+    var nodes = scope.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+    }
+    var aria = scope.querySelectorAll('[data-i18n-aria]');
+    for (var j = 0; j < aria.length; j++) {
+      aria[j].setAttribute('aria-label', t(aria[j].getAttribute('data-i18n-aria')));
+    }
+    var title = scope.querySelectorAll('[data-i18n-title]');
+    for (var k = 0; k < title.length; k++) {
+      title[k].setAttribute('title', t(title[k].getAttribute('data-i18n-title')));
+    }
+    var ph = scope.querySelectorAll('[data-i18n-ph]');
+    for (var l = 0; l < ph.length; l++) {
+      ph[l].setAttribute('placeholder', t(ph[l].getAttribute('data-i18n-ph')));
+    }
+  }
+
+  MK.i18n = {
+    get lang() { return lang; },
+    resolve: resolve,
+    setLang: setLang,
+    t: t,
+    apply: apply,
+    dict: DICT
+  };
+})();

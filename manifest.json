@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Tabmark",
+  "version": "1.0.0",
+  "description": "新标签页书签台：文件夹、置顶与本地推荐一屏直达，零网络请求。A calm local-first bookmark launcher.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{F4A6FF0F-3F33-4EA1-B64C-8BDBFB88CF13}",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
+  "background": {
+    "scripts": [
+      "shared/defaults.js",
+      "background.js"
+    ]
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab/newtab.html"
+  },
+  "action": {
+    "default_title": "Tabmark",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icon-16.png",
+      "32": "assets/icon-32.png",
+      "48": "assets/icon-48.png",
+      "96": "assets/icon-96.png",
+      "128": "assets/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon-16.png",
+    "32": "assets/icon-32.png",
+    "48": "assets/icon-48.png",
+    "96": "assets/icon-96.png",
+    "128": "assets/icon-128.png",
+    "256": "assets/icon-256.png",
+    "512": "assets/icon-512.png"
+  },
+  "permissions": [
+    "bookmarks",
+    "history",
+    "storage",
+    "tabs",
+    "contextMenus",
+    "search"
+  ]
+}

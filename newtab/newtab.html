@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabmark</title>
+<!-- synchronous: sets data-theme before the first paint (no white flash) -->
+<script src="../shared/theme-init.js?v=33"></script>
+<link rel="stylesheet" href="../shared/tokens.css?v=33">
+<link rel="stylesheet" href="newtab.css?v=33">
+</head>
+<body>
+<div class="app" id="app">
+  <div class="wall" id="wall" aria-hidden="true"></div>
+
+  <aside class="side" id="side">
+    <div class="side-head">
+      <span class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Tabmark</span>
+      </span>
+      <button class="icon-btn side-toggle" id="btnSideToggle" type="button"
+              data-icon="panelLeft" data-i18n-aria="sidebarCollapse"></button>
+    </div>
+
+    <nav class="side-nav" id="sideNav" data-i18n-aria="allBookmarks">
+      <button class="nav-row is-active" id="navAll" type="button" data-view="all" data-i18n-aria="allBookmarks">
+        <span class="ico" data-icon="grid" data-size="16" aria-hidden="true"></span>
+        <span class="nav-text" data-i18n="allBookmarks"></span>
+        <span class="nav-count" id="countAll"></span>
+      </button>
+      <button class="nav-row" id="navPinned" type="button" data-view="pinned" data-i18n-aria="pinned">
+        <span class="ico" data-icon="pin" data-size="16" aria-hidden="true"></span>
+        <span class="nav-text" data-i18n="pinned"></span>
+        <span class="nav-count" id="countPinned"></span>
+      </button>
+      <button class="nav-row" id="navRecent" type="button" data-view="recent" data-i18n-aria="recentVisits">
+        <span class="ico" data-icon="history" data-size="16" aria-hidden="true"></span>
+        <span class="nav-text" data-i18n="recentVisits"></span>
+      </button>
+    </nav>
+
+    <div class="side-label-row">
+      <span class="side-label" data-i18n="foldersSection"></span>
+      <button class="icon-btn tiny" id="btnAddFolderSide" type="button"
+              data-icon="folderPlus" data-i18n-aria="addFolder"></button>
+    </div>
+
+    <nav class="tree" id="tree" role="tree" data-i18n-aria="foldersSection"></nav>
+
+    <nav class="rail" id="rail" aria-hidden="true" hidden></nav>
+
+    <div class="side-foot">
+      <button class="icon-btn" id="btnThemeSide" type="button" data-icon="moon"
+              data-i18n-aria="theme"></button>
+      <button class="icon-btn" id="btnSettingsSide" type="button" data-icon="gear"
+              data-i18n-aria="settings"></button>
+      <span class="side-note" id="sideNote"></span>
+    </div>
+
+    <div class="side-resizer" id="sideResizer" role="separator" aria-orientation="vertical"
+         tabindex="-1" data-i18n-title="sidebarResetHint"></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="btnMenu" type="button" data-icon="bars"
+              data-i18n-aria="foldersSection"></button>
+      <div class="head-text">
+        <div class="crumbs" id="crumbs" hidden></div>
+        <div class="title-row">
+          <h1 class="title" id="viewTitle" tabindex="-1"></h1>
+          <span class="count" id="viewCount"></span>
+        </div>
+      </div>
+
+        <div class="hist-bar" id="histBar" hidden></div>
+
+        <div class="search-wrap" id="searchWrap">
+          <form class="search" id="searchBox" action="#">
+            <span class="search-ico" aria-hidden="true" data-icon="search"></span>
+            <button class="engine-btn" id="btnEngine" type="button" aria-haspopup="menu"
+                    data-i18n-title="searchEngine" data-i18n-aria="searchEngine">
+              <span class="engine-badge" id="engineBadge"></span>
+              <span class="engine-caret" aria-hidden="true"></span>
+            </button>
+            <input id="searchInput" type="text" role="combobox" autocomplete="off"
+                   enterkeyhint="search"
+                   autocorrect="off" spellcheck="false" aria-expanded="false"
+                   aria-controls="searchPop" aria-autocomplete="list"
+                   data-i18n-aria="search" data-i18n-ph="searchHint">
+            <kbd class="search-kbd" id="searchKbd">⌘K</kbd>
+            <button class="icon-btn tiny search-clear" id="btnClearSearch" type="button"
+                    data-icon="x" data-i18n-aria="clearSearch" hidden></button>
+            <button class="search-cancel" id="btnSearchCancel" type="button" data-i18n="cancel"></button>
+          </form>
+          <div class="spop" id="searchPop" role="listbox" hidden></div>
+          <div class="engpop" id="engPop" role="menu" aria-labelledby="btnEngine" hidden></div>
+        </div>
+
+      <div class="tools">
+        <button class="tool-btn" id="btnSort" type="button" aria-haspopup="menu"
+                data-i18n-aria="sort" data-i18n-title="sort">
+          <span class="ico" data-icon="sortAsc" data-size="15" aria-hidden="true"></span>
+          <span class="tool-label" id="sortLabel"></span>
+        </button>
+
+        <button class="tool-btn icon-only" id="btnOrganize" type="button" aria-haspopup="dialog"
+                data-i18n-aria="organize" data-i18n-title="organize">
+          <span class="ico" data-icon="broom" data-size="16" aria-hidden="true"></span>
+        </button>
+
+        <button class="btn-primary" id="btnAdd" type="button" aria-haspopup="menu">
+          <span class="ico" data-icon="plus" data-size="15" aria-hidden="true"></span>
+          <span data-i18n="add"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="scroll" id="scroll">
+      <div class="content" id="content" aria-live="polite"></div>
+    </div>
+  </main>
+</div>
+
+<div class="menu-layer" id="menuLayer" hidden></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span class="toast-text" id="toastText"></span>
+  <button class="toast-action" id="toastAction" type="button" hidden></button>
+</div>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog" class="dlg-form" id="dlgForm">
+    <header class="dlg-head">
+      <h2 class="dlg-title" id="dlgTitle"></h2>
+      <button class="icon-btn" type="button" id="dlgClose" data-icon="x" data-i18n-aria="close"></button>
+    </header>
+    <div class="dlg-body" id="dlgBody"></div>
+    <footer class="dlg-foot" id="dlgFoot"></footer>
+  </form>
+</dialog>
+
+<div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script src="../shared/icons.js?v=33" defer></script>
+<script src="../shared/i18n.js" defer></script>
+<script src="../shared/engines.js?v=33" defer></script>
+<script src="../shared/demo-data.js?v=33" defer></script>
+<script src="../shared/defaults.js?v=33" defer></script>
+<script src="../shared/api.js?v=33" defer></script>
+<script src="../shared/vendor/qrcode.js?v=33" defer></script>
+<script src="../shared/vendor/qrcode-utf8.js?v=33" defer></script>
+<script src="../shared/qr.js?v=33" defer></script>
+<script src="newtab.js?v=33" defer></script>
+</body>
+</html>

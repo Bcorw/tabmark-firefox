@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabmark</title>
+<script src="../shared/theme-init.js"></script>
+<link rel="stylesheet" href="../shared/tokens.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="pp" id="pp">
+
+  <header class="pp-head">
+    <span class="pp-fav" id="ppFav" aria-hidden="true"></span>
+    <div class="pp-page">
+      <div class="pp-title" id="ppTitle"></div>
+      <div class="pp-url" id="ppUrl"></div>
+    </div>
+    <button class="icon-btn" id="ppQr" type="button" data-icon="qr" data-i18n-aria="qrCode"></button>
+  </header>
+
+  <p class="pp-badge" id="ppBadge" hidden></p>
+
+  <section class="pp-body" id="ppBody"></section>
+
+  <p class="pp-status" id="ppStatus" role="status" aria-live="polite" hidden></p>
+
+  <footer class="pp-foot">
+    <button class="pp-foot-btn" id="ppOpen" type="button">
+      <span class="ico" data-icon="bookmark" data-size="14" aria-hidden="true"></span>
+      <span data-i18n="openNewtab"></span>
+    </button>
+    <button class="pp-foot-btn" id="ppSettings" type="button">
+      <span class="ico" data-icon="gear" data-size="14" aria-hidden="true"></span>
+      <span data-i18n="openSettings"></span>
+    </button>
+  </footer>
+</div>
+
+<script src="../shared/icons.js" defer></script>
+<script src="../shared/i18n.js" defer></script>
+<script src="../shared/demo-data.js" defer></script>
+<script src="../shared/defaults.js" defer></script>
+<script src="../shared/api.js" defer></script>
+<script src="../shared/vendor/qrcode.js" defer></script>
+<script src="../shared/vendor/qrcode-utf8.js" defer></script>
+<script src="../shared/qr.js" defer></script>
+<script src="popup.js" defer></script>
+</body>
+</html>
