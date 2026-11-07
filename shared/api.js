@@ -247,10 +247,18 @@
 
   var treeCache = null;
 
-  function rootKeyOf(id, title) {
+  function rootKeyOf(id, title, parentId) {
     if (!id) return null;
     /* Firefox's invisible parent of the four roots */
     if (/^root_+$/.test(id)) return null;
+    /* Chrome: invisible root has id "0"; the three roots hang off it with
+       fixed ids 1/2/3. Guarded by parentId so Firefox numeric ids never hit. */
+    if (id === '0') return null;
+    if (parentId === '0') {
+      if (id === '1') return 'toolbar';
+      if (id === '2') return 'unfiled';
+      if (id === '3') return 'mobile';
+    }
     if (id.indexOf('toolbar') === 0) return 'toolbar';
     if (id.indexOf('menu') === 0) return 'menu';
     if (id.indexOf('unfiled') === 0) return 'unfiled';
@@ -264,6 +272,10 @@
     if (s === 'menu' || s.indexOf('bookmarks menu') === 0) return 'menu';
     if (s.indexOf('unfiled') === 0 || s.indexOf('other bookmarks') === 0) return 'unfiled';
     if (s.indexOf('mobile') === 0) return 'mobile';
+    /* Chrome roots in zh-CN UI */
+    if (s.indexOf('书签栏') === 0) return 'toolbar';
+    if (s.indexOf('其他书签') === 0) return 'unfiled';
+    if (s.indexOf('移动设备书签') === 0 || s.indexOf('移动书签') === 0) return 'mobile';
     return null;
   }
 
@@ -305,7 +317,7 @@
 
     all.forEach(function (node) {
       node.children.sort(function (a, b) { return a.index - b.index; });
-      node.rootKey = rootKeyOf(node.id, node.title);
+      node.rootKey = rootKeyOf(node.id, node.title, node.parentId);
       if (node.rootKey) node.title = displayTitle(node);
     });
 
