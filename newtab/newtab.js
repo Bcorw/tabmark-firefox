@@ -2262,7 +2262,8 @@
     return {
       kind: w.kind || 'none', value: w.value || '',
       dim: typeof w.dim === 'number' ? w.dim : 0,
-      ink: w.ink || 'auto'
+      ink: w.ink || 'auto',
+      inkColor: w.inkColor || '#f2f2f4'
     };
   }
 
@@ -2277,7 +2278,7 @@
   /* decide light or dark text over the wallpaper: user pick wins, else
      auto = light text when the wallpaper itself is dark OR the theme is dark */
   function wallpaperInk(w) {
-    if (w.ink === 'light' || w.ink === 'dark') return w.ink;
+    if (w.ink === 'light' || w.ink === 'dark' || w.ink === 'custom') return w.ink;
     if (themeIsDark()) return 'light';
     if (w.kind === 'gradient') {
       var g = GRADIENTS.filter(function (x) { return x.id === w.value; })[0];
@@ -2288,6 +2289,13 @@
       return (typeof w.imgLum === 'number' && w.imgLum < 168) ? 'light' : 'dark';
     }
     return 'dark';
+  }
+
+  function hexToRgb(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || ''));
+    if (!m) return { r: 242, g: 242, b: 244 };
+    var n = parseInt(m[1], 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
   }
 
   function sampleImageLuminance(url, cb) {
@@ -2324,6 +2332,17 @@
     var ink = on ? wallpaperInk(w) : (themeIsDark() ? 'light' : 'dark');
     nodes.app.classList.toggle('ink-light', on && ink === 'light');
     nodes.app.classList.toggle('ink-dark', on && ink === 'dark');
+    nodes.app.classList.toggle('ink-custom', on && ink === 'custom');
+    if (on && ink === 'custom') {
+      var c = hexToRgb(w.inkColor);
+      nodes.app.style.setProperty('--wall-ink-1', w.inkColor);
+      nodes.app.style.setProperty('--wall-ink-2', 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',0.82)');
+      nodes.app.style.setProperty('--wall-ink-3', 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',0.55)');
+    } else {
+      nodes.app.style.removeProperty('--wall-ink-1');
+      nodes.app.style.removeProperty('--wall-ink-2');
+      nodes.app.style.removeProperty('--wall-ink-3');
+    }
     nodes.wall.style.setProperty('--wall-dim', String(w.dim || 0));
     if (!on) { nodes.wall.style.backgroundImage = 'none'; return; }
     if (w.kind === 'gradient') {
@@ -2639,9 +2658,34 @@
         var inkSeg = seg([
           { value: 'auto', label: t('inkAuto') },
           { value: 'light', label: t('inkLight') },
-          { value: 'dark', label: t('inkDark') }
+          { value: 'dark', label: t('inkDark') },
+          { value: 'custom', label: t('inkCustom') }
         ], w.ink || 'auto', function (v) { commit({ ink: v }); });
         wrap.appendChild(setRow(t('wallpaperInk'), null, inkSeg));
+
+        if ((w.ink || 'auto') === 'custom') {
+          var colorWrap = el('div', 'ink-color-row');
+          var swatches = ['#f2f2f4', '#ffe9b8', '#bfeee4', '#ffd6e0', '#cfe0ff'];
+          swatches.forEach(function (c) {
+            var sw = el('button', 'ink-swatch');
+            sw.type = 'button';
+            sw.style.background = c;
+            sw.title = c;
+            sw.addEventListener('click', function () {
+              commit({ inkColor: c });
+            });
+            colorWrap.appendChild(sw);
+          });
+          var picker = document.createElement('input');
+          picker.type = 'color';
+          picker.className = 'ink-picker';
+          picker.value = w.inkColor || '#f2f2f4';
+          picker.addEventListener('input', function () {
+            commit({ inkColor: picker.value });
+          });
+          colorWrap.appendChild(picker);
+          wrap.appendChild(setRow(t('inkCustomHint'), null, colorWrap));
+        }
       }
 
       if (w.kind !== 'none') {

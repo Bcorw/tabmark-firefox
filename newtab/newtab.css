@@ -1368,6 +1368,59 @@ html .app.is-wall.ink-dark .sec-title {
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
+/* 自定义文字色：深玻璃衬底 + 用户主色派生三档文字 */
+html .app.is-wall.ink-custom {
+  --ink-1: var(--wall-ink-1, #f2f2f4);
+  --ink-2: var(--wall-ink-2, rgba(255, 255, 255, 0.82));
+  --ink-3: var(--wall-ink-3, rgba(255, 255, 255, 0.55));
+  --ink-inverse: #263238;
+  --bg-side: rgba(16, 16, 22, 0.55);
+  --surface: rgba(24, 24, 31, 0.66);
+  --surface-hover: rgba(38, 38, 46, 0.78);
+  --surface-strong: rgba(38, 38, 46, 0.72);
+  --surface-raised: rgba(30, 30, 38, 0.95);
+  --accent: #b9a3e8;
+  --accent-ink: #cbb8f0;
+  --accent-soft: rgba(185, 163, 232, 0.16);
+  --accent-soft-2: rgba(185, 163, 232, 0.26);
+  --danger: #ef8a7a;
+  --danger-soft: rgba(239, 138, 122, 0.16);
+}
+html .app.is-wall.ink-custom .title,
+html .app.is-wall.ink-custom .sec-title,
+html .app.is-wall.ink-custom .count,
+html .app.is-wall.ink-custom .sec-count,
+html .app.is-wall.ink-custom .crumbs {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 设置页：取色器 + 快捷色板 */
+.ink-color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ink-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0;
+  box-shadow: var(--shadow-1);
+}
+.ink-swatch:hover { transform: scale(1.12); }
+.ink-picker {
+  width: 42px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+
 /* floating furniture must stay legible over a photo/gradient — keep cards
    translucent, but popovers and dialogs go solid */
 .app.is-wall .spop,

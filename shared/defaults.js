@@ -32,6 +32,6 @@
     fontScale: 1,             /* 0.9 | 1 | 1.15                       */
     widthScale: 1,            /* 0.85 | 1 | 1.2                       */
     noAnim: false,            /* disable bookmark animations          */
-    wallpaper: { kind: 'none', value: '', dim: 0, ink: 'auto' }
+    wallpaper: { kind: 'none', value: '', dim: 0, ink: 'auto', inkColor: '#f2f2f4' }
   };
 })(typeof self !== 'undefined' ? self : this);

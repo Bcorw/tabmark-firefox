@@ -24,6 +24,8 @@
 | inkAuto | 自动 | Auto |
 | inkLight | 浅色 | Light |
 | inkDark | 深色 | Dark |
+| inkCustom | 自定义 | Custom |
+| inkCustomHint | 选一个主文字色，侧栏与卡片将配深色衬底 | Pick a text color; sidebars and cards get a dark glass base |
 | allBookmarks | 全部书签 | All bookmarks |
 | pinned | 置顶 | Pinned |
 | recentVisits | 最近浏览 | Recently visited |
@@ -329,4 +331,4 @@
 | sidebarResetHint | 拖动可调宽，双击复位 | Drag to resize, double-click to reset |
 
 ---
-共 261 个 key，中英文一一对应。
+共 263 个 key，中英文一一对应。
