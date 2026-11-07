@@ -2284,7 +2284,8 @@
       return (g && g.lum < 150) ? 'light' : 'dark';
     }
     if (w.kind === 'image') {
-      return (typeof w.imgLum === 'number' && w.imgLum < 150) ? 'light' : 'dark';
+      /* 自选图常有局部亮斑，均值偏高但暗区占比大 —— 阈值从严 */
+      return (typeof w.imgLum === 'number' && w.imgLum < 168) ? 'light' : 'dark';
     }
     return 'dark';
   }
