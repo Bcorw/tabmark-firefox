@@ -988,8 +988,19 @@
 
   function getWallpaper() {
     var w = S.settings && S.settings.wallpaper;
-    if (!w || typeof w !== 'object') return { kind: 'none', value: '', dim: 0 };
-    return { kind: w.kind || 'none', value: w.value || '', dim: typeof w.dim === 'number' ? w.dim : 0 };
+    if (!w || typeof w !== 'object') {
+      return { kind: 'none', value: '', dim: 0, ink: 'auto', inkColor: '' };
+    }
+    /* 白名单必须与 newtab.js 的 wallpaperValue() 同步 —— 漏字段会在
+       patchWallpaper 二次合并时把新键（ink/inkColor/imgLum）静默抹掉 */
+    return {
+      kind: w.kind || 'none',
+      value: w.value || '',
+      dim: typeof w.dim === 'number' ? w.dim : 0,
+      ink: w.ink || 'auto',
+      inkColor: typeof w.inkColor === 'string' ? w.inkColor : '',
+      imgLum: typeof w.imgLum === 'number' ? w.imgLum : undefined
+    };
   }
 
   function patchWallpaper(patch) {

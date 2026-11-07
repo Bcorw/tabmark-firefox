@@ -22,6 +22,9 @@
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
   min-height: 100vh;
   background: var(--bg);
+  /* 继承链重锚点：ink-* 组在 .app 上重定义 --ink-*，
+     color 必须在 .app 层重新解析，否则后代继承到 body 的旧值 */
+  color: var(--ink-1);
 }
 
 .app[data-collapsed="1"] { grid-template-columns: var(--sidebar-w-collapsed) minmax(0, 1fr); }
@@ -1833,3 +1836,13 @@ html[data-theme="dark"] .app.is-wall .dlg { background: #2e2e33; }
 }
 .agg-empty { font-size: 13px; color: var(--ink-3); }
 .rail[hidden] { display: none; }
+
+/* 继承链重锚点：ink-* 组在 .app 上重定义 --ink-*，
+   color 必须在 .app 层重新解析，否则无显式 color 的元素
+   （如顶栏大标题）会继承到 body 在 .app 外层解析的旧值 */
+.app { color: var(--ink-1); }
+
+/* 继承链重锚点：ink-* 组在 .app 上重定义 --ink-*，
+   color 必须在 .app 层重新解析，否则无显式 color 的元素
+   （如顶栏大标题）会继承到 body 在 .app 外层解析的旧值 */
+.app { color: var(--ink-1); }
