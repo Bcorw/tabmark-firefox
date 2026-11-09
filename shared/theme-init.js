@@ -31,6 +31,12 @@
     if (motion === 'off') {
       root.setAttribute('data-motion', 'off');
     }
+    /* 字号 / 书签宽度：预渲染阶段就写到 <html>，避免首屏按默认值排版后跳变 */
+    var fs = parseFloat(window.localStorage.getItem('tabmark.fontScale'));
+    if (fs && fs > 0.5 && fs < 2) root.style.setProperty('--font-scale', String(fs));
+    var ws = parseFloat(window.localStorage.getItem('tabmark.widthScale'));
+    if (ws && ws > 0.3 && ws < 2) root.style.setProperty('--width-scale', String(ws));
+
     var lang = params.get('lang') || window.localStorage.getItem('tabmark.lang');
     if (lang === 'zh' || lang === 'en') {
       root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');

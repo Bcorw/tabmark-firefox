@@ -1,4 +1,4 @@
-# AMO 提交表单填写稿 — Tabmark 1.0.0（桌面版）
+# AMO 提交表单填写稿 — Tabmark 1.0.1（桌面版）
 
 > 按 addons.mozilla.org「提交新附加组件」表单的字段顺序编写，每个字段下的内容可以**整段复制**。
 > 需要你替换的只有：`<你的支持邮箱>`；`<隐私政策网址>` 为可选项。
@@ -130,7 +130,7 @@ https://bcorw.github.io/tabmark-firefox/privacy-policy.html
 ## 9. 给审核员的备注（Notes to Reviewer）
 
 ```
-审阅说明 — Tabmark 1.0.0（Firefox 桌面版）
+审阅说明 — Tabmark 1.0.1（Firefox 桌面版）
 
 【构建方式】纯静态 WebExtension，没有构建步骤、打包器、压缩或混淆。zip 内容即源码，可逐行审阅；所有 JS 为可读的 ES5/ES2019 语法。
 
@@ -166,7 +166,7 @@ https://bcorw.github.io/tabmark-firefox/privacy-policy.html
 
 ## 10. 提交前检查清单
 
-- [ ] `manifest.json` version = `1.0.0`；`gecko.id` 已定（`{F4A6FF0F-3F33-4EA1-B64C-8BDBFB88CF13}`），**提交后不要再改 id**
+- [ ] `manifest.json` version = `1.0.1`；`gecko.id` 已定（`{F4A6FF0F-3F33-4EA1-B64C-8BDBFB88CF13}`），**提交后不要再改 id**
 - [ ] zip 根目录直接含 `manifest.json`（不能多套一层文件夹）
 - [ ] 兼容性只勾 Firefox 桌面，不勾 Android
 - [ ] 概述 ≤250 字符、描述 ≥250 字符

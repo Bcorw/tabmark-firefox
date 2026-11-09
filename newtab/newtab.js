@@ -448,6 +448,21 @@
       state.settings.layoutType === 'col';
   }
 
+  /* 全部书签扁平列表（跨 4 个根、含嵌套）。docs/ux-spec.md 规定的 all 视图是
+     「根夹卡片 → 全部书签扁平列表」，之前只渲染了文件夹卡片 —— 直属书签在
+     首页完全看不到，用户会以为书签丢了。 */
+  function allBookmarkNodes() {
+    var out = [];
+    function walk(node) {
+      (node.children || []).forEach(function (c) {
+        if (c.url) out.push(c);
+        else walk(c);
+      });
+    }
+    ((state.tree && state.tree.roots) || []).forEach(walk);
+    return sortNodes(out, state.settings.sortKey);
+  }
+
   function renderAllView() {
     var hasAny = false;
 
@@ -479,6 +494,14 @@
       var folderSec = section({ text: t('foldersSection'), icon: 'folder' }, folders.length);
       folderSec.appendChild(grid(folders.map(function (f) { return folderCard(f); })));
       nodes.content.appendChild(folderSec);
+    }
+
+    var books = allBookmarkNodes();
+    if (books.length) {
+      hasAny = true;
+      var bookSec = section({ text: t('allBookmarks'), icon: 'grid' }, books.length);
+      bookSec.appendChild(grid(books.map(function (n) { return cardFor(n, { zone: 'all' }); })));
+      nodes.content.appendChild(bookSec);
     }
 
     if (!hasAny) {
@@ -2357,6 +2380,9 @@
         sampleImageLuminance(url, function (lum) {
           state.settings.wallpaper.imgLum = lum;
           applyWallpaper();
+          /* 持久化亮度：不存的话每次开新标签都要重采样，
+             期间会先按「深墙纸」渲染再翻转，出现一次闪字。 */
+          api.patchWallpaper({ imgLum: lum });
         });
       }
     });
@@ -2633,7 +2659,9 @@
         var f = file.files && file.files[0];
         readImageFile(f, function (dataUrl) {
           api.setWallpaperImage(dataUrl).then(function () {
-            return api.patchWallpaper({ kind: 'image', value: 'local' });
+            /* imgLum 必须清空：否则新图沿用旧图的亮度判定，
+               「自动」文字颜色会算错（亮图配深字 / 暗图配深字看不清）。 */
+            return api.patchWallpaper({ kind: 'image', value: 'local', imgLum: null });
           }).then(function () {
             state.settings = api.getSettings();
             applyWallpaper();
@@ -2715,8 +2743,20 @@
   }
 
   /* markoob-style bottom slider toast: live preview, commit on close */
+  /* 未提交的滑块状态：onDone 里会写设置并 render，关闭前必须落一次，
+     否则拖完直接关对话框/开另一个滑块会丢设置。 */
+  var sliderPending = null;
+
+  function commitSlider() {
+    if (!sliderPending) return;
+    var p = sliderPending;
+    sliderPending = null;
+    try { p.onDone(Number(p.range.value)); } catch (e) { /* ignore */ }
+  }
+
   function openSliderToast(opts) {
-    closeSliderToast();
+    commitSlider();
+    removeSliderToasts();   /* 先清残留：toast 挂在 <dialog> 上，dlgBody 重建不会带走它 */
     var toastEl = el('div', 'sl-toast');
     toastEl.id = 'sliderToast';
     var title = el('span', 'sl-title');
@@ -2740,22 +2780,40 @@
       opts.onLive(Number(range.value));
     });
 
+    /* 松手即提交：只认 ✓ 按钮的话，用户拖完直接关设置对话框时
+       onDone 永远不会触发，设置就丢了（重开浏览器恢复默认）。 */
+    range.addEventListener('change', function () {
+      sliderPending = null;
+      opts.onDone(Number(range.value));
+    });
+
     var done = el('button', 'sl-done');
     done.type = 'button';
     done.setAttribute('aria-label', t('done'));
     done.appendChild(I.el('check', 16));
     done.addEventListener('click', function () {
+      sliderPending = null;
       opts.onDone(Number(range.value));
       closeSliderToast();
     });
     toastEl.appendChild(done);
 
+    sliderPending = { onDone: opts.onDone, range: range };
     (document.querySelector('dialog[open]') || document.body).appendChild(toastEl);
   }
 
+  /* 用 querySelectorAll 而不是 getElementById —— 残留的重复 id 会让
+     getElementById 只删掉第一个，留下一个永远关不掉的可见 toast。 */
+  function removeSliderToasts() {
+    var all = document.querySelectorAll('#sliderToast, .sl-toast');
+    for (var i = all.length - 1; i >= 0; i--) {
+      if (all[i] && all[i].parentNode) all[i].parentNode.removeChild(all[i]);
+    }
+  }
+
   function closeSliderToast() {
-    var t0 = document.getElementById('sliderToast');
-    if (t0) t0.remove();
+    commitSlider();   /* 关闭前把未提交的值落盘 */
+    removeSliderToasts();
   }
 
   function openSettings() {
@@ -3232,6 +3290,9 @@
 
     nodes.dlgClose.addEventListener('click', closeDialog);
     nodes.dlg.addEventListener('cancel', function () { /* native close */ });
+    /* 对话框任何关闭路径都要收尾滑块：拖完不点 ✓ 直接关掉时，
+       值要落盘，悬浮 toast 也不能留在 DOM 里。 */
+    nodes.dlg.addEventListener('close', function () { closeSliderToast(); });
     nodes.dlg.addEventListener('click', function (e) {
       if (e.target === nodes.dlg) {
         var r = nodes.dlg.getBoundingClientRect();
@@ -3315,6 +3376,10 @@
       return loadAll();
     }).then(function () {
       if (state.settings.sidebarCollapsed && !isMobile()) nodes.app.setAttribute('data-collapsed', '1');
+      /* applyAppearance 之前只在「调滑块 / 改设置」时调用，boot 里漏了 ——
+         导致保存过的字号、书签宽度、禁用动画在重开浏览器后全部回默认
+         （存储里还在，只是从没被应用）。这是「设置失效」的真正根因。 */
+      applyAppearance();
       applySideWidth();
       applyWallpaper();
       renderEngineBadge();
@@ -3331,6 +3396,7 @@
       state.loading = false;
       state.failed = true;
       applyTheme();
+      applyAppearance();
       applyWallpaper();
       hydrateIcons();
       render();

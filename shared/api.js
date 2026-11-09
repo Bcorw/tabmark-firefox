@@ -154,8 +154,22 @@
       } else {
         window.localStorage.removeItem('tabmark.theme');
       }
-      if (s.animations === false) window.localStorage.setItem('tabmark.motion', 'off');
+      /* 设置项是 noAnim（true=禁用动画），不是 animations ——
+         之前判断了不存在的字段，导致首屏预渲染永远拿不到 motion:off。 */
+      if (s.noAnim === true) window.localStorage.setItem('tabmark.motion', 'off');
       else window.localStorage.removeItem('tabmark.motion');
+      /* 字号/宽度也镜像一份，theme-init 在首帧就写到 <html>，
+         否则每次开新标签都会「先按默认字号排版、再跳变」。 */
+      if (typeof s.fontScale === 'number' && s.fontScale !== 1) {
+        window.localStorage.setItem('tabmark.fontScale', String(s.fontScale));
+      } else {
+        window.localStorage.removeItem('tabmark.fontScale');
+      }
+      if (typeof s.widthScale === 'number' && s.widthScale !== 1) {
+        window.localStorage.setItem('tabmark.widthScale', String(s.widthScale));
+      } else {
+        window.localStorage.removeItem('tabmark.widthScale');
+      }
     } catch (e) { /* ignore */ }
   }
 
@@ -241,6 +255,38 @@
     Object.keys(patch).forEach(function (k) { S.ui[k] = patch[k]; });
     debounceWrite(function () { return JSON.parse(JSON.stringify(S.ui)); }, 'ui', timers.ui);
     return Promise.resolve(S.ui);
+  }
+
+  /* 页面被隐藏/卸载时，把所有防抖中的写入立即落盘。
+     之前 settings 有 300ms 防抖、pinned/hidden/usage/ui 各 250ms，
+     且没有任何卸载兜底 —— 调完字体/宽度滑块马上关标签页或刷新，
+     设置就丢了（用户反馈的「重开浏览器设置失效」）。 */
+  function flushPending() {
+    try { flushSettings(); } catch (e) { /* ignore */ }
+    Object.keys(timers).forEach(function (k) {
+      if (timers[k].t) {
+        clearTimeout(timers[k].t);
+        timers[k].t = null;
+      }
+    });
+    try {
+      rawSet({
+        pinned: JSON.parse(JSON.stringify(S.pinned)),
+        hidden: JSON.parse(JSON.stringify(S.hidden)),
+        usage: JSON.parse(JSON.stringify(S.usage)),
+        ui: JSON.parse(JSON.stringify(S.ui))
+      });
+    } catch (e) { /* ignore */ }
+  }
+
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener('pagehide', flushPending);
+    window.addEventListener('beforeunload', flushPending);
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') flushPending();
+      });
+    }
   }
 
   /* ── tree ─────────────────────────────────────────────────────────────── */
@@ -1127,6 +1173,7 @@
       get: function () { return S.settings || mergeDefaults({}); },
       patch: patchSettings,
       flush: flushSettings,
+      flushPending: flushPending,
       defaults: DEFAULTS
     },
     getSettings: function () { return S.settings || mergeDefaults({}); },

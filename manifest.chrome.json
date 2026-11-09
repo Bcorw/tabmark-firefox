@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tabmark",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "新标签页书签台：文件夹、置顶、本地推荐与即时搜索，零网络请求。A calm local-first bookmark launcher.",
   "background": {
     "service_worker": "background.js"

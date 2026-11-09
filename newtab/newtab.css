@@ -1143,7 +1143,9 @@ form.search { margin: 0; }
   .btn-primary span:last-child { display: none; }
   .btn-primary { width: 34px; justify-content: center; padding: 0; }
   .content { padding: 6px 18px 80px; }
-  .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  /* 窄窗口同样要跟随「书签宽度」设置 —— 之前写死 180px，
+     导致窗口 ≤860px 时滑块完全无效（用户以为设置又丢了）。 */
+  .grid { grid-template-columns: repeat(auto-fill, minmax(calc(var(--width-scale, 1) * 180px), 1fr)); }
   .title { font-size: 18px; }
 }
 
